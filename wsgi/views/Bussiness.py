@@ -44,3 +44,47 @@ class Bussiness(BaseView):
         return all_bussiness
 
 
+
+class BussinessPeaple(BaseView):
+
+    def post(self,**kwargs):
+        return {}
+
+    def get(self,**kwargs):
+        return {}
+
+    def put(self, **kwargs):
+        return {}
+
+    def delete(self,**kwargs):
+        return {}
+
+
+class Settings(BaseView):
+
+    def post(self,**kwargs):
+        return {}
+
+    def get(self,**kwargs):
+        return {}
+
+    def put(self, **kwargs):
+        return {}
+
+    def delete(self,**kwargs):
+        return {}
+
+
+class Service(BaseView):
+
+    def post(self,**kwargs):
+        return {}
+
+    def get(self,**kwargs):
+        return {}
+
+    def put(self, **kwargs):
+        return {}
+
+    def delete(self,**kwargs):
+        return {}

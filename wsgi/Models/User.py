@@ -21,6 +21,7 @@ class Bio(EmbeddedDocument):
 
 
 class User(Document):
+
     GUEST_ROLE = 'quest'
 
     PROFESSIONAL_ROLE = 'professional'
@@ -47,6 +48,9 @@ class User(Document):
     personal_info = EmbeddedDocumentField(PersonalInfo)
     bio = EmbeddedDocumentField(Bio)
     address = Address
+
+    def get_roles(self):
+        return [self.GUEST_ROLE,self.PROFESSIONAL_ROLE,self.SHOP_OWNER_ROLE]
 
     def set_username_and_password(self, username, password):
         self.username = username

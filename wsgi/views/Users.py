@@ -10,29 +10,37 @@ from flask import g as global_storage
 
 class User(BaseView):
 
+    @RequestValidation.parameters_assertion(parameters=['name', 'password'])
+    def post(self, **kwargs):
+        name = self.request.args['name']
+        password = self.request.args['password']
+        user = User()
+        user.set_username_and_password(name, password)
+        role = kwargs['role'] if 'role' in kwargs else User.GUEST_ROLE
+        if role:
+            user.roles = [role]
+        user.save()
+        return user.to_mongo(fields=['_id'])
+
+
     @RequestValidation.parameters_assertion(parameters=['id'])
     def get(self):
         id = self.request.args['id']
         user = User.objects.get(pk=id)
         return user.to_mongo(fields=['_id', 'username'])
 
-    @RequestValidation.parameters_assertion(parameters=['name', 'password'])
-    def post(self):
-        name = self.request.args['name']
-        password = self.request.args['password']
-        user = User()
-        user.set_username_and_password(name, password)
-        user.save()
-        return user.to_mongo(fields=['_id'])
 
     @auth.login_required
     @RequestValidation.parameters_assertion(parameters=['password'])
-    def put(self):
+    def put(self, **kwargs):
         password = self.request.args['password']
         user = global_storage.user
 
         user.assertion_is_activated()
         user.assertion_is_not_deleted()
+        role = kwargs['role'] if 'role' in kwargs else User.GUEST_ROLE
+        if role:
+            user.roles = [role]
 
         user.set_password(password)
         user.save()
@@ -48,7 +56,7 @@ class User(BaseView):
         return {'ok': True}
 
 
-class Login(BaseView):
+class token(BaseView):
     @auth.login_required
     def get(self):
         user = global_storage.user
@@ -76,13 +84,13 @@ class Activation(BaseView):
         #TODO resend activation mail
         return {'success':True}
 
-class Role(BaseView):
-
-    @auth.login_required
-    def post(self, **kwargs):
-        role = kwargs['role']
-        user = global_storage.user
-        user.assertion_is_not_deleted()
+# class Role(BaseView):
+#
+#     @auth.login_required
+#     def post(self, **kwargs):
+#         role = kwargs['role']
+#         user = global_storage.user
+#         user.assertion_is_not_deleted()
 
 
 
