@@ -3,3 +3,4 @@ mongoengine
 flask-mongoengine
 flask-mail
 Flask-HTTPAuth
+pillow
