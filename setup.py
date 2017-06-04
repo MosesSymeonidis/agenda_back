@@ -6,5 +6,7 @@ setup(name='YourAppName',
       author='Your Name',
       author_email='example@example.com',
       url='http://www.python.org/sigs/distutils-sig/',
-      install_requires=['Flask>=0.7.2','flask_mongoengine>=0.14.0'],
+      install_requires=['Flask>=0.7.2',
+			'mongoengine>=0.14.0',
+			'flask-mongoengine>=0.9.3'],
      )
