@@ -46,7 +46,7 @@ class User(Document):
 
     personal_info = EmbeddedDocumentField(PersonalInfo)
     bio = EmbeddedDocumentField(Bio)
-    address = EmbeddedDocument(Address)
+    address = Address
 
     def set_username_and_password(self, username, password):
         self.username = username
