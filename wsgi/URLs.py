@@ -1,19 +1,41 @@
 main_urls = {
-    '/auth/':'views.Users.token',#this returns user's token
-    '/user/<string:role>':'views.Users.User',#create/update/delete a user
-    '/user':'views.Users.User',#get user and same as the above for the guests
-     '/activation/<string:user_id>':'views.Users.Activation',
-    '/bussiness':'views.Bussiness.Bussiness',
+    '/auth/':{
+        'class':'views.Users.token',
+        'endpoint':'auth'},
+    '/user/<string:role>':{
+        'class':'views.Users.User',
+        'endpoint':'user_role'},
+    '/user':{
+        'class':'views.Users.User',
+        'endpoint':'user_guest'},
+    '/activation/<string:user_id>':{
+        'class':'views.Users.Activation',
+        'endpoint':'activation'},
+    '/bussiness':{
+        'class':'views.Bussiness.Bussiness',
+        'endpoint':'bussiness'},
 #    '/service/<string:type':'',
-    '/service':'views.Bussiness.Service',
-    '/bussiness/<string:bussiness_id>/<string:role>/<string:user_id>':'views.Bussiness.BussinessPeaple',
-    '/bussiness/<string:bussiness_id>/settings':'views.Bussiness.Settings',
-    '/appointment':'views.Appointment.Appointment',
-    '/appointment/<string:id>':'views.Appointment.Appointment'
+    '/service':{
+        'class':'views.Bussiness.Service',
+        'endpoint':'service'},
+    '/bussiness/<string:bussiness_id>/<string:role>/<string:user_id>':{
+        'class':'views.Bussiness.BussinessPeaple',
+        'endpoint':'bussiness_peaple'},
+    '/bussiness/<string:bussiness_id>/settings':{
+        'class':'views.Bussiness.Settings',
+        'endpoint':'bussiness_settings'},
+    '/appointment':{
+        'class':'views.Appointment.Appointment',
+        'endpoint':'new_appointment'},
+    '/appointment/<string:id>':{
+        'class':'views.Appointment.Appointment',
+        'endpoint':'created_appointment'}
 
 }
 
-debug_urls = {'/debug':'views.test.test'}
+debug_urls = {    '/debug':{
+        'class':'views.test.test',
+        'endpoint':'test'} }
 
 def get_urls(debug=False):
     if debug:

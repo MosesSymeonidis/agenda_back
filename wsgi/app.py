@@ -27,9 +27,11 @@ print(app.config.get('DEBUG'))
 routes = URLs.get_urls(debug=app.config.get('DEBUG'))
 
 for route in routes:
-    imported_class = str_import(routes[route])
+    print(routes[route]['class'])
+    imported_class = str_import(routes[route]['class'])
+
     route_object = imported_class()
-    app.add_url_rule(route, view_func=route_object.dispatcher, endpoint=routes[route],
+    app.add_url_rule(route, view_func=route_object.dispatcher, endpoint=routes[route]['endpoint'],
                      methods=['GET', 'POST', 'PUT', 'DELETE'])
 
 

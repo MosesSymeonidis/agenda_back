@@ -18,8 +18,8 @@ import datetime
 class Bussiness(Document):
 
     name = StringField(required=True,max_length=200)
-    settings = DynamicEmbeddedDocument()
-    address = EmbeddedDocument(Address)
+    # settings = DynamicEmbeddedDocument()
+    address = Address
     
     owner = ReferenceField(User)
     employees = ListField(ReferenceField(User))
