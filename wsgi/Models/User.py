@@ -6,7 +6,7 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
 from flask import current_app as app
 from flask import g as global_storage
 from Models.GeneralEmbeddedDocuments import Address
-from Models import Config
+from Models.Config import Config
 import datetime
 
 class PersonalInfo(EmbeddedDocument):
@@ -39,7 +39,9 @@ class User(Document):
                                   max_length=20,
                                   choices=(GUEST_ROLE,PROFESSIONAL_ROLE,SHOP_OWNER_ROLE),
                                   default=GUEST_ROLE))
+
     plans = Config.objects.get(config_id='plans')
+
     plan = StringField(choices=plans.distinct,required=True,max_length=10)
 
     personal_info = EmbeddedDocumentField(PersonalInfo)
