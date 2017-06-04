@@ -1,10 +1,4 @@
 main_urls = {
-    "/user": 'views.Users.User',
-    "/login": "views.Users.Login",
-    "/activation/<string:user_id>":"views.Users.Activation",
-    "/user/<string:role>":"views.Users.Role",
-
-
     '/auth/':'views.Users.token',#this returns user's token
     '/user/<string:role>':'views.Users.User',#create/update/delete a user
     '/user':'views.Users.User',#get user and same as the above for the guests
