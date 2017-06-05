@@ -5,7 +5,7 @@ main_urls = {
     '/user/<string:role>':{
         'class':'views.Users.UserView',
         'endpoint':'user_role'},
-    '/user/':{
+    '/user':{
         'class':'views.Users.UserView',
         'endpoint':'user_guest'},
     '/activation/<string:user_id>':{
