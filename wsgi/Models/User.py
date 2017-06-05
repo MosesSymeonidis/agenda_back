@@ -29,6 +29,7 @@ class User(Document):
     SHOP_OWNER_ROLE = 'shop_owner'
 
     username = StringField(max_length=200, required=True, unique=True)
+    email = EmailField(required=True,unique=True)
     password = StringField(max_length=200, required=True)
     created_at = DateTimeField(default=datetime.datetime.now)
     activated = BooleanField(default=False)
@@ -52,9 +53,13 @@ class User(Document):
     def get_roles(self):
         return [self.GUEST_ROLE,self.PROFESSIONAL_ROLE,self.SHOP_OWNER_ROLE]
 
-    def set_username_and_password(self, username, password):
+    def set_credentials(self, username, email, password):
         self.username = username
+        self.email = email
         self.set_password(password)
+
+    def set_email(self, email):
+        self.email = email
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
