@@ -22,12 +22,9 @@ app.session_interface = MongoEngineSessionInterface(db)
 configs = Config.objects.get(config_id='initials')
 app.config.from_object(configs)
 
-print(configs.to_json())
-print(app.config.get('DEBUG'))
 routes = URLs.get_urls(debug=app.config.get('DEBUG'))
 
 for route in routes:
-    print(routes[route]['class'])
     imported_class = str_import(routes[route]['class'])
 
     route_object = imported_class()
