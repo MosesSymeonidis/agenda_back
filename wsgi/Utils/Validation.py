@@ -1,6 +1,6 @@
 class RequestValidation():
     @staticmethod
-    def parameters_assertion(parameters):
+    def parameters_assertion(parameters,args_or_form='args'):
         """
         Decorator for assertion parameters
         :param parameters:
@@ -8,9 +8,14 @@ class RequestValidation():
         """
         def assertions(func):
             def func_wrapper(self,*args,**kwargs):
-                for parameter in parameters:
-                    if parameter not in self.request.args:
-                        raise Exception('Error parameter')
+                if args_or_form == 'args':
+                    for parameter in parameters:
+                        if parameter not in self.request.args:
+                            raise Exception('Error parameter')
+                else:
+                    for parameter in parameters:
+                        if parameter not in self.request.form:
+                            raise Exception('Error parameter')
                 return func(self,*args,**kwargs)
             return func_wrapper
         return assertions
