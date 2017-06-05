@@ -12,11 +12,16 @@ class RequestValidation():
                     for parameter in parameters:
                         if parameter not in self.request.args:
                             raise Exception('Error parameter')
-                else:
+                elif args_or_form == 'form':
                     for parameter in parameters:
                         if parameter not in self.request.form:
                             raise Exception('Error parameter')
+                else:
+                    for parameter in parameters:
+                        if parameter not in self.request.get_json():
+                            raise Exception('Error parameter')
                 return func(self,*args,**kwargs)
+
             return func_wrapper
         return assertions
 
