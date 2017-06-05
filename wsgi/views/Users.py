@@ -10,11 +10,11 @@ from flask import g as global_storage
 
 class UserView(BaseView):
 
-    @RequestValidation.parameters_assertion(parameters=['name', 'password','email'])
+    @RequestValidation.parameters_assertion(parameters=['username', 'password','email'])
     def post(self, **kwargs):
-        name = self.request.args['name']
-        password = self.request.args['password']
-        email = self.request.args['email']
+        name = self.request.form['username']
+        password = self.request.form['password']
+        email = self.request.form['email']
         user = User()
         user.set_credentials(username=name,email=email, password=password)
         role = kwargs['role'] if 'role' in kwargs else User.GUEST_ROLE
