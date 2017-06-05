@@ -44,7 +44,7 @@ class User(Document):
 
     plans = Config.objects.get(config_id='plans')
 
-    plan = StringField(choices=plans.distinct,required=True,max_length=10)
+    plan = StringField(choices=plans.distinct,max_length=10)
 
     personal_info = EmbeddedDocumentField(PersonalInfo)
     bio = EmbeddedDocumentField(Bio)

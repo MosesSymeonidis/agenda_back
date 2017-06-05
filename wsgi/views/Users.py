@@ -8,7 +8,7 @@ auth = User.auth
 from flask import g as global_storage
 
 
-class User(BaseView):
+class UserView(BaseView):
 
     @RequestValidation.parameters_assertion(parameters=['name', 'password','email'])
     def post(self, **kwargs):
@@ -16,7 +16,7 @@ class User(BaseView):
         password = self.request.args['password']
         email = self.request.args['email']
         user = User()
-        user.set_credentials(name=name,email=email, password=password)
+        user.set_credentials(username=name,email=email, password=password)
         role = kwargs['role'] if 'role' in kwargs else User.GUEST_ROLE
         if role:
             user.roles = [role]

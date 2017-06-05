@@ -3,10 +3,10 @@ main_urls = {
         'class':'views.Users.token',
         'endpoint':'auth'},
     '/user/<string:role>':{
-        'class':'views.Users.User',
+        'class':'views.Users.UserView',
         'endpoint':'user_role'},
     '/user':{
-        'class':'views.Users.User',
+        'class':'views.Users.UserView',
         'endpoint':'user_guest'},
     '/activation/<string:user_id>':{
         'class':'views.Users.Activation',
