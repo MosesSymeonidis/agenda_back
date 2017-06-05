@@ -1,5 +1,5 @@
 main_urls = {
-    '/auth/':{
+    '/auth':{
         'class':'views.Users.token',
         'endpoint':'auth'},
     '/user/<string:role>':{
