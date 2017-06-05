@@ -5,12 +5,14 @@ from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
 from Models.Config import Config
 from Utils.utils import json_response, str_import
 import URLs
+from flask_cors import CORS, cross_origin
 
 from flask_mail import Mail
 
 
 db = MongoEngine()
 app = Flask(__name__)
+CORS(app)
 app.config['MONGODB_SETTINGS'] = {
     'db': 'my_app_database',
     'host': 'mongodb://cbuser:092hdfkv245@ds053305.mlab.com:53305/cheapbookdev'

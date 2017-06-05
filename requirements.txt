@@ -4,3 +4,4 @@ flask-mongoengine
 flask-mail
 Flask-HTTPAuth
 pillow
+flask-cors
