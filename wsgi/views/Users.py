@@ -59,7 +59,7 @@ class UserView(BaseView):
 
 class token(BaseView):
     @auth.login_required
-    def get(self):
+    def post(self):
         user = global_storage.user
 
         user.assertion_is_not_deleted()

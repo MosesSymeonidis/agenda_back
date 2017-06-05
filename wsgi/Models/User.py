@@ -132,7 +132,7 @@ class User(Document):
         user = User.verify_auth_token(username_or_token)
         if not user:
             # try to authenticate with username/password
-            user = User.objects.get(username=username_or_token)
+            user = User.objects.get(email=username_or_token)
             if not user or not user.check_password(password):
                 return False
         global_storage.user = user
