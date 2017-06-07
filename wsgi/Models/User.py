@@ -22,7 +22,7 @@ class Bio(EmbeddedDocument):
 
 class User(Document):
 
-    GUEST_ROLE = 'quest'
+    GUEST_ROLE = 'guest'
 
     PROFESSIONAL_ROLE = 'professional'
 

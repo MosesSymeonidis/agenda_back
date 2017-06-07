@@ -28,6 +28,9 @@ app.session_interface = MongoEngineSessionInterface(db)
 configs = Config.objects.get(config_id='initials')
 app.config.from_object(configs)
 app.config['DEBUG']=False
+
+Mail.init_app(app)
+
 sentry = Sentry(dsn='https://4e1a812ea958463fbda2cf92b8f111cc:53072bf456b144db88dbf8c7edbcf7ea@sentry.io/177217')
 sentry.init_app(app)
 routes = URLs.get_urls()

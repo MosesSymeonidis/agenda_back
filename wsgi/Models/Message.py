@@ -43,7 +43,7 @@ class Mail(Notification):
             body=self.compiled_body,
             sender=self.send_from,
             recipients=[self.send_to])
-        FlaskMail(app).send(message=msg)
+        app.send(message=msg)
         self.save()
 
 

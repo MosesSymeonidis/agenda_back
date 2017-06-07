@@ -17,7 +17,6 @@ class Handler:
         self.error_code = error_dict[self.e]['error_code']
         self.error_message = error_dict[self.e]['error_message']
         if (self.e == Exception()):
-            print("asdfasdfsadf")
             app.sentry.captureException()
         return {
             'error_code':self.error_code,
