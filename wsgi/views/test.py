@@ -9,9 +9,11 @@ import os
 class test(BaseView):
     def get(self):
         from flask_mail import Message as FlaskMessage
+        from flask_mail import Mail
         msg = FlaskMessage(
             subject='bourda',
             body='yolo',
-            sender='moi2113@gmail.com',
+            sender='flaskproject2113@gmail.com',
             recipients=['msymewnidhs2113@yahoo.gr'])
-        app.send(message=msg)
+        mail = Mail()
+        mail.send(message=msg)
