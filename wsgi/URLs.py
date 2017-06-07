@@ -33,12 +33,11 @@ main_urls = {
 
 }
 
-debug_urls = {    '/debug':{
+debug_urls = {
+    '/test':{
         'class':'views.test.test',
         'endpoint':'test'} }
 
-def get_urls(debug=False):
-    if debug:
-        main_urls.update(debug_urls)
-        return main_urls
+def get_urls():
+    main_urls.update(debug_urls)
     return main_urls

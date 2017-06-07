@@ -1,19 +1,24 @@
 from mongoengine.errors import *
 from Utils.utils import json_response
-
+from flask import current_app as app
+BASIC_ERROR_PREFIX = '00'
 MONGO_PREFIX = '03'
 
+BASIC_ERROR_500 = {'error_code': BASIC_ERROR_PREFIX+'00', 'error_message': 'General Error'}
 
-error_dict = {Exception: {'error_code': '0000', 'error_message': 'General Error'},}
+error_dict = {}
 
 class Handler:
-    def __init__(self, e=Exception()):
+    def __init__(self, e):
         self.e = e
 
     @json_response
     def generate_response(self, e):
         self.error_code = error_dict[self.e]['error_code']
         self.error_message = error_dict[self.e]['error_message']
+        if (self.e == Exception()):
+            print("asdfasdfsadf")
+            app.sentry.captureException()
         return {
             'error_code':self.error_code,
             'error_message':self.error_message

@@ -8,6 +8,10 @@ import URLs
 from flask_cors import CORS, cross_origin
 
 from flask_mail import Mail
+from raven.contrib.flask import Sentry
+
+
+
 
 
 db = MongoEngine()
@@ -24,7 +28,9 @@ app.session_interface = MongoEngineSessionInterface(db)
 configs = Config.objects.get(config_id='initials')
 app.config.from_object(configs)
 app.config['DEBUG']=False
-routes = URLs.get_urls(debug=app.config.get('DEBUG'))
+sentry = Sentry(dsn='https://4e1a812ea958463fbda2cf92b8f111cc:53072bf456b144db88dbf8c7edbcf7ea@sentry.io/177217')
+sentry.init_app(app)
+routes = URLs.get_urls()
 
 for route in routes:
     imported_class = str_import(routes[route]['class'])
@@ -36,6 +42,7 @@ for route in routes:
 
 #TODO app.register_error_handler()
 
+from Utils import ExceptionHandler
 from Utils.ExceptionHandler import error_dict, Handler
 
 for e in error_dict:
@@ -44,24 +51,10 @@ for e in error_dict:
 
 # @app.errorhandler(404)
 # @app.errorhandler(401)
-# @app.errorhandler(500)
-# @json_response
-# def page_not_found(error):
-#     error_handler = ErrorHandler(error=error)
-#     return error_handler.response()
-#     if hasattr(error, 'code'):
-#         return {'error': error.code, 'description': error.description}
-#     from mongoengine import errors as mongoerrors
-#     base_class = error.__class__.__bases__[0]
-#     if base_class.__name__ in mongoerrors.__all__:
-#         if base_class == mongoerrors.DoesNotExist:
-#
-#             print(error.__class__)
-#             print(error)
-#             print(error.code)
-#             return {'error':'document does not exists'}
-#         print('mongoerror')
-#     return {'error': str(error)}
+@app.errorhandler(500)
+@json_response
+def page_not_found(error):
+    return ExceptionHandler.BASIC_ERROR_500
 
 
 if __name__ == "__main__":
