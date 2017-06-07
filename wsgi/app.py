@@ -7,7 +7,7 @@ from Utils.utils import json_response, str_import
 import URLs
 from flask_cors import CORS, cross_origin
 
-from flask_mail import Mail
+import flask_mail
 from raven.contrib.flask import Sentry
 
 
@@ -29,7 +29,8 @@ configs = Config.objects.get(config_id='initials')
 app.config.from_object(configs)
 app.config['DEBUG']=False
 
-Mail.init_app(app)
+mail = flask_mail.Mail()
+mail.init_app(app=app)
 
 sentry = Sentry(dsn='https://4e1a812ea958463fbda2cf92b8f111cc:53072bf456b144db88dbf8c7edbcf7ea@sentry.io/177217')
 sentry.init_app(app)
