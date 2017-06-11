@@ -32,7 +32,10 @@ main_urls = {
         'endpoint':'created_appointment'},
     '/schema':{
         'class':'views.Config.Config',
-        'endpoint':'configs'}
+        'endpoint':'configs'},
+    '/translations/<string:lang>/':{
+        'class':'views.Translations.Translations',
+        'endpoint':'translations'}
 
 }
 

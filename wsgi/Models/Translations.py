@@ -1,14 +1,14 @@
 from mongoengine import *
 from pymongo import UpdateOne
 import os
-
+EN_us = 'EN_us'
+GR_el = 'GR_el'
 
 class Translation(DynamicDocument):
-    translation_id = StringField(unique=True,primary_key=True)
+    _id = StringField(unique=True,primary_key=True)
 
     @staticmethod
     def importFromCSV(csv_path = os.getcwd()+'/translations.csv'):
-
         import csv
         with open(csv_path ) as csvfile:
              reader = csv.DictReader(csvfile)
