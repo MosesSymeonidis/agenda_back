@@ -1,3 +1,5 @@
+from Utils.Exceptions.GeneralExceptions import ParameterDoesNotExists
+
 class RequestValidation():
     @staticmethod
     def parameters_assertion(parameters,args_or_form='args'):
@@ -11,15 +13,15 @@ class RequestValidation():
                 if args_or_form == 'args':
                     for parameter in parameters:
                         if parameter not in self.request.args:
-                            raise Exception('Error parameter')
+                            raise ParameterDoesNotExists(parameter)
                 elif args_or_form == 'form':
                     for parameter in parameters:
                         if parameter not in self.request.form:
-                            raise Exception('Error parameter')
+                            raise ParameterDoesNotExists(parameter)
                 else:
                     for parameter in parameters:
                         if parameter not in self.request.get_json():
-                            raise Exception('Error parameter')
+                            raise ParameterDoesNotExists(parameter)
                 return func(self,*args,**kwargs)
 
             return func_wrapper
@@ -29,5 +31,5 @@ class RequestValidation():
     def parameter_assertion(dictionary, params):
         for val in params:
             if val not in dictionary:
-                raise Exception('Error parameter')
+                raise ParameterDoesNotExists(val)
         return True

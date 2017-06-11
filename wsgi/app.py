@@ -1,18 +1,13 @@
 # -*- coding: utf-8 -*-
+import flask_mail
 from flask import Flask
-from flask import request
-from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
+from flask_cors import CORS
+from flask_mongoengine import MongoEngine
+from raven.contrib.flask import Sentry
+from Utils.Exceptions import GeneralExceptions
+import URLs
 from Models.Config import Config
 from Utils.utils import json_response, str_import
-import URLs
-from flask_cors import CORS, cross_origin
-
-import flask_mail
-from raven.contrib.flask import Sentry
-
-
-
-
 
 db = MongoEngine()
 app = Flask(__name__)
@@ -24,7 +19,6 @@ app.config['MONGODB_SETTINGS'] = {
 
 db.init_app(app)
 
-app.session_interface = MongoEngineSessionInterface(db)
 configs = Config.objects.get(config_id='initials')
 app.config.from_object(configs)
 app.config['DEBUG']=False
@@ -44,9 +38,6 @@ for route in routes:
                      methods=['GET', 'POST', 'PUT', 'DELETE'])
 
 
-#TODO app.register_error_handler()
-
-from Utils import ExceptionHandler
 from Utils.ExceptionHandler import error_dict, Handler
 
 for e in error_dict:
@@ -58,7 +49,7 @@ for e in error_dict:
 @app.errorhandler(500)
 @json_response
 def page_not_found(error):
-    return ExceptionHandler.BASIC_ERROR_500
+    return GeneralExceptions.BASIC_ERROR_500
 
 
 if __name__ == "__main__":

@@ -1,18 +1,10 @@
 from mongoengine import *
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_httpauth import HTTPBasicAuth
-from itsdangerous import (TimedJSONWebSignatureSerializer
-                          as Serializer, BadSignature, SignatureExpired)
-from flask import current_app as app
-from flask import g as global_storage
+
 from Models.GeneralEmbeddedDocuments import Address
 from Models.User import User
+from Models.Service import Service
 
 import datetime
-
-
-
-
 
 
 class Bussiness(Document):
@@ -24,4 +16,6 @@ class Bussiness(Document):
     owner = ReferenceField(User)
     employees = ListField(ReferenceField(User))
     clients = ListField(ReferenceField(User))
+
+    services = ListField(ReferenceField(Service))
 

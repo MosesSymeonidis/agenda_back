@@ -29,7 +29,10 @@ main_urls = {
         'endpoint':'new_appointment'},
     '/appointment/<string:id>':{
         'class':'views.Appointment.Appointment',
-        'endpoint':'created_appointment'}
+        'endpoint':'created_appointment'},
+    '/schema':{
+        'class':'views.Config.Config',
+        'endpoint':'configs'}
 
 }
 

@@ -36,7 +36,7 @@ class Bussiness(BaseView):
 
         return user.to_mongo(fields=['_id'])
 
-    @RequestValidation.parameters_assertion(parameters=['q'])
+    @RequestValidation.parameters_assertion(parameters=['sort_by', 'facets'])
     def get(self):
         all_bussiness = []
         for bussiness in Bussiness.objects:

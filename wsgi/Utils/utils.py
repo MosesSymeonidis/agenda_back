@@ -1,5 +1,5 @@
 from flask import jsonify
-from mongoengine import Document
+from mongoengine.queryset.queryset import QuerySet
 from bson import objectid
 from datetime import datetime
 from pymongo.cursor import Cursor
@@ -22,22 +22,29 @@ def bson_handler(x):
             return 'True'
         else:
             return 'False'
-
     elif isinstance(x, objectid.ObjectId):
         return str(x)
     elif callable(getattr(x, "to_mongo", None)):
         return x.to_mongo()
+    elif isinstance(x,QuerySet):
+        res = []
+        for i in x:
+            res.append(i.to_mongo(fields=x._loaded_fields.fields))
+        return res
     elif isinstance(x, str):
         return x
+    elif isinstance(x, list):
+        res = []
+        for i in x:
+            res.append(bson_handler(i))
+        return res
     elif isinstance(x, Exception):
-        print(x.errno, x.strerror)
         return {
             'error': x.strerror,
             'error_number': x.errno
         }
     else:
         return str(x)
-        raise TypeError(x)
 
 
 def json_response(func):
