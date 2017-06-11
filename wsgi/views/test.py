@@ -6,7 +6,7 @@ from flask_mongoengine import pagination
 from Models.User import User
 from Utils.Exceptions.Bussiness import NotProperField
 import os
-
+from Models.Translations import Translation
 
 class test(BaseView):
     def get(self):
@@ -20,4 +20,4 @@ class test(BaseView):
         # mail = Mail()
         # mail.send(message=msg)
         # raise NotProperField(field_name='asdf')
-        return User.objects.skip(1).limit(2).fields(id=1,username=1)
+        return Translation.get_translations('EN_us')
