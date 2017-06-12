@@ -6,3 +6,4 @@ Flask-HTTPAuth
 pillow
 flask-cors
 raven
+requests

@@ -1,27 +1,38 @@
 from mongoengine import *
-from pymongo import UpdateOne
-import os
 EN_us = 'EN_us'
 GR_el = 'GR_el'
 
+
 class Translation(DynamicDocument):
+
     _id = StringField(unique=True,primary_key=True)
 
     @staticmethod
-    def importFromCSV(csv_path = os.getcwd()+'/translations.csv'):
+    def downloadCSV(csv_url = """https://docs.google.com/spreadsheets/d/1bINGrQDuslpBLjmssYDy1JGDb7A8Wu1_2MX9_RllWLU/export?format=csv&id=1bINGrQDuslpBLjmssYDy1JGDb7A8Wu1_2MX9_RllWLU&gid=0"""):
+        import requests
+        from io import StringIO
+        csv = requests.get(csv_url)
+        csv.encoding = 'utf-8'
+        return StringIO(csv.text)
+
+    @staticmethod
+    def importFromCSVFile(csvfile):
         import csv
-        with open(csv_path ) as csvfile:
-             reader = csv.DictReader(csvfile)
+        reader_list = csv.DictReader(csvfile)
+        i = 1
+        for row in reader_list:
 
-             for row in reader:
-                 try:
-                     entity = Translation()
-                     for field in row:
-                         entity.__setattr__(field,row[field])
+            try:
+                entity = Translation()
+                for field in row:
+                    entity.__setattr__(field,row[field])
+                entity.save()
+                print('The '+str(i)+' translation inserted')
+                i += 1
+            except ValidationError:
+                print(ValidationError)
+                pass
 
-                     entity.save()
-                 except ValidationError:
-                     pass
     @staticmethod
     def get_translations(lang):
         translations = Translation.objects.fields(**{
