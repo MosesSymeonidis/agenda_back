@@ -4,7 +4,7 @@ from Utils.Validation import RequestValidation
 from Models.User import User
 
 auth = User.auth
-
+from flask import render_template
 from flask import g as global_storage
 
 
@@ -21,6 +21,11 @@ class UserView(BaseView):
         if role:
             user.roles = [role]
         user.save()
+        activation_code = user.generate_activation_code()
+
+        res = render_template('mails/activation_mail.html', user_id = user.id,activation_code = activation_code)
+        print(res)
+
         return user.to_mongo(fields=['_id'])
 
 
