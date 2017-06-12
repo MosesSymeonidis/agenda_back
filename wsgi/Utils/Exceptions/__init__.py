@@ -1,3 +1,3 @@
 class BasicException(Exception):
-    pass
+    parameters={}
 

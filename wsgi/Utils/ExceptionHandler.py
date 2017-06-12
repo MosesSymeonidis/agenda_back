@@ -13,10 +13,13 @@ class Handler:
 
     @json_response
     def generate_response(self, e):
-
+        self.error_parameters = {}
         if hasattr(e,'code') and hasattr(e,'message'):
             self.error_code = e.code
             self.error_message = e.message
+            if hasattr(e,'parameters'):
+                self.error_parameters = e.parameters
+
         else:
             self.error_code = error_dict[self.e]['error_code']
             self.error_message = error_dict[self.e]['error_message']
@@ -25,7 +28,8 @@ class Handler:
             app.sentry.captureException()
         return {
             'error_code':self.error_code,
-            'error_message':self.error_message
+            'error_message':self.error_message,
+            'error_parameters':self.error_parameters
         }
 
 def getErrorDict(selected_class):
