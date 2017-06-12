@@ -51,6 +51,11 @@ for e in error_dict:
 def page_not_found(error):
     return GeneralExceptions.BASIC_ERROR_500
 
+@app.errorhandler(404)
+@json_response
+def page_not_found(error):
+    return GeneralExceptions.BASIC_ERROR_500
+
 
 if __name__ == "__main__":
     app.run('0.0.0.0')
