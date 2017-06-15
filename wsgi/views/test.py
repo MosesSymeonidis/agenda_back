@@ -1,12 +1,5 @@
 from views import BaseView
-from Models.Message import Mail
-from Models.Utils import Config
-from flask import current_app as app
-from flask_mongoengine import pagination
-from Models.User import User
-from Utils.Exceptions.Bussiness import NotProperField
-import os
-from Models.Translations import Translation
+
 
 class test(BaseView):
     def get(self):
@@ -20,4 +13,4 @@ class test(BaseView):
         # mail = Mail()
         # mail.send(message=msg)
         # raise NotProperField(field_name='asdf')
-        return Translation.get_translations('EN_us')
+        return {}
