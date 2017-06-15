@@ -1,6 +1,6 @@
 from views import BaseView
 from Models.Message import Mail
-from Models.Config import Config
+from Models.Utils import Config
 from flask import current_app as app
 from flask_mongoengine import pagination
 from Models.User import User

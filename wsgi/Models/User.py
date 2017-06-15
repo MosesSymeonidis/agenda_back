@@ -6,7 +6,7 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
 from flask import current_app as app
 from flask import g as global_storage
 from Models.GeneralEmbeddedDocuments import Address
-from Models.Config import Config
+from Models.Utils import Config
 import datetime
 
 class PersonalInfo(EmbeddedDocument):

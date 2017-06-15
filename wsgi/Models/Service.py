@@ -1,6 +1,6 @@
 from mongoengine import *
 from Models.User import User
-from Models.Config import Config
+from Models.Utils import Config
 from mongoengine.errors import InvalidDocumentError
 
 

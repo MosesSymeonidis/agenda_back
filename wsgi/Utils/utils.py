@@ -3,6 +3,8 @@ from mongoengine.queryset.queryset import QuerySet
 from bson import objectid
 from datetime import datetime
 from pymongo.cursor import Cursor
+import os
+import tempfile
 import json
 from flask import current_app as app
 from mongoengine import connect
@@ -92,3 +94,37 @@ def async(f):
         thr = Thread(target=f, args=args, kwargs=kwargs)
         thr.start()
     return wrapper
+
+
+def save_request(request):
+    req_data = {}
+    req_data['endpoint'] = request.endpoint
+    req_data['method'] = request.method
+    req_data['cookies'] = request.cookies
+    req_data['data'] = request.data
+    req_data['headers'] = dict(request.headers)
+    req_data['headers'].pop('Cookie', None)
+    req_data['args'] = request.args
+    req_data['form'] = request.form
+    req_data['remote_addr'] = request.remote_addr
+    req_data['url'] = request.url
+    files = []
+    for name, fs in request.files.items():
+        dst = tempfile.NamedTemporaryFile()
+        fs.save(dst)
+        dst.flush()
+        filesize = os.stat(dst.name).st_size
+        dst.close()
+        files.append({'name': name, 'filename': fs.filename, 'filesize': filesize,
+         'mimetype': fs.mimetype, 'mimetype_params': fs.mimetype_params})
+    req_data['files'] = files
+
+    return req_data
+
+def save_response(resp):
+    resp_data = {}
+    resp_data['status_code'] = resp.status_code
+    resp_data['status'] = resp.status
+    resp_data['headers'] = dict(resp.headers)
+    resp_data['data'] = resp.response
+    return resp_data

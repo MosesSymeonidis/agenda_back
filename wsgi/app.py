@@ -6,8 +6,10 @@ from flask_mongoengine import MongoEngine
 from raven.contrib.flask import Sentry
 from Utils.Exceptions import GeneralExceptions
 import URLs
-from Models.Config import Config
-from Utils.utils import json_response, str_import
+from Models.Utils import Config, Traffic
+from Utils.utils import json_response, str_import, save_request, save_response
+from flask import request
+from flask import g as global_storage
 
 db = MongoEngine()
 app = Flask(__name__)
@@ -56,6 +58,19 @@ def page_not_found(error):
 def page_not_found(error):
     return GeneralExceptions.BASIC_ERROR_500
 
+@app.before_request
+def before_request():
+    request_data = save_request(request)
+    global_storage.request_data=request_data
+
+
+@app.after_request
+def after_request(resp):
+    resp_data = save_response(resp)
+    request_data = global_storage.request_data
+    traffic = Traffic(request=request_data,response=resp_data)
+    traffic.save()
+    return resp
 
 if __name__ == "__main__":
     app.run('0.0.0.0')
