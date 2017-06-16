@@ -29,7 +29,7 @@ class Translation(DynamicDocument):
     def downloadCSV(csv_url = """https://docs.google.com/spreadsheets/d/1bINGrQDuslpBLjmssYDy1JGDb7A8Wu1_2MX9_RllWLU/export?format=csv&id=1bINGrQDuslpBLjmssYDy1JGDb7A8Wu1_2MX9_RllWLU&gid=0"""):
         import requests
         from io import StringIO
-        csv = requests.get(csv_url)
+        csv = requests.get(url=csv_url,verify=False)
         csv.encoding = 'utf-8'
         return StringIO(csv.text)
 
