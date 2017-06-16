@@ -16,6 +16,7 @@ class Bussiness(BaseView):
         user = global_storage.user
         user.check_role(User.SHOP_OWNER_ROLE)
         data = self.request.args['data']
+        print(data)
         RequestValidation.parameter_assertion(data,['name','settings','plan','address'])
         address = data['address']
         RequestValidation.parameter_assertion(address,['country','area','city','street','geolocation'])

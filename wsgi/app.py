@@ -68,6 +68,9 @@ def before_request():
 def after_request(resp):
     resp_data = save_response(resp)
     request_data = global_storage.request_data
+    print(resp_data)
+    print(request_data)
+
     traffic = Traffic(request=request_data,response=resp_data)
     traffic.save()
     return resp

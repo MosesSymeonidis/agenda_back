@@ -119,7 +119,7 @@ def save_request(request):
          'mimetype': fs.mimetype, 'mimetype_params': fs.mimetype_params})
     req_data['files'] = files
 
-    return req_data
+    return jsonify(json.loads(json.dumps(obj=req_data, default=bson_handler)))
 
 def save_response(resp):
     resp_data = {}
@@ -127,4 +127,4 @@ def save_response(resp):
     resp_data['status'] = resp.status
     resp_data['headers'] = dict(resp.headers)
     resp_data['data'] = resp.response
-    return resp_data
+    return jsonify(json.loads(json.dumps(obj=resp_data, default=bson_handler)))
