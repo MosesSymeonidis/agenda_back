@@ -1,7 +1,7 @@
 from mongoengine.errors import *
 from Utils.utils import json_response
 from flask import current_app as app
-from Utils.Exceptions import Mongo, Bussiness
+from Utils.Exceptions import Mongo, Business
 import inspect
 
 
@@ -40,4 +40,4 @@ def getErrorDict(selected_class):
     return res
 
 error_dict.update(Mongo.errors)
-error_dict.update(getErrorDict(Bussiness))
+error_dict.update(getErrorDict(Business))

@@ -7,11 +7,13 @@ from Models.Service import Service
 import datetime
 
 
-class Bussiness(Document):
+class Business(Document):
 
     name = StringField(required=True,max_length=200)
-    # settings = DynamicEmbeddedDocument()
-    address = Address
+    settings = DictField()
+
+    address = EmbeddedDocumentField(Address)
+    plan = StringField()
     
     owner = ReferenceField(User)
     employees = ListField(ReferenceField(User))

@@ -11,19 +11,19 @@ main_urls = {
     '/activation/<string:user_id>':{
         'class':'views.Users.Activation',
         'endpoint':'activation'},
-    '/bussiness':{
-        'class':'views.Bussiness.Bussiness',
-        'endpoint':'bussiness'},
+    '/business':{
+        'class':'views.Business.Business',
+        'endpoint':'business'},
 #    '/service/<string:type':'',
     '/service':{
-        'class':'views.Bussiness.Service',
+        'class':'views.Business.Service',
         'endpoint':'service'},
-    '/bussiness/<string:bussiness_id>/<string:role>/<string:user_id>':{
-        'class':'views.Bussiness.BussinessPeaple',
-        'endpoint':'bussiness_peaple'},
-    '/bussiness/<string:bussiness_id>/settings':{
-        'class':'views.Bussiness.Settings',
-        'endpoint':'bussiness_settings'},
+    '/business/<string:business_id>/<string:role>/<string:user_id>':{
+        'class':'views.Business.BusinessPeaple',
+        'endpoint':'business_peaple'},
+    '/business/<string:business_id>/settings':{
+        'class':'views.Business.Settings',
+        'endpoint':'business_settings'},
     '/appointment':{
         'class':'views.Appointment.Appointment',
         'endpoint':'new_appointment'},
@@ -36,7 +36,7 @@ main_urls = {
     '/translations/<string:lang>/':{
         'class':'views.Translations.Translations',
         'endpoint':'translations'},
-    '/<string:bussiness_id>/<string:type>/CSV':{
+    '/<string:business_id>/<string:type>/CSV':{
         'class':'views.ExportImport.CSV',
         'endpoint':'export_import_csv'},
 

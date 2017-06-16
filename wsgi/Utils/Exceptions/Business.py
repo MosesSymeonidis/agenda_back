@@ -17,3 +17,4 @@ class NotProperField(BasicException):
         self.message = 'Does not exists field ' + field_name
         self.code = PREFIX_CODE+'02'
         self.parameters = {'field_name': field_name}
+

@@ -1,13 +1,13 @@
 from views import GeneralView
 from flask import Response
-from Models.Bussiness import Bussiness
+from Models.Business import Business
 from bson import ObjectId
 
 class CSV(GeneralView):
 
-    def get(self, bussiness_id, type, **kwargs):
+    def get(self, business_id, type, **kwargs):
         if type.lower() == 'service':
-            objects = Bussiness.objects(id = ObjectId(bussiness_id)).services
+            objects = Business.objects(id = ObjectId(business_id)).services
             print(objects)
         else:
             return super(CSV,self).get()

@@ -11,7 +11,7 @@ errors = {
     InvalidQueryError: {'error_code': MONGO_PREFIX+'06', 'error_message': 'Invalid query'},
     OperationError: {'error_code': MONGO_PREFIX+'07', 'error_message': 'Operation Error'},
     NotUniqueError: {'error_code': MONGO_PREFIX+'08', 'error_message': 'The entity exists'},
-    FieldDoesNotExist: {'error_code': MONGO_PREFIX+'09', 'error_message': 'Field does not exists'},
+    # FieldDoesNotExist: {'error_code': MONGO_PREFIX+'09', 'error_message': 'Field does not exists'},
     ValidationError: {'error_code': MONGO_PREFIX+'10', 'error_message': 'Field Validation Error'},
     SaveConditionError: {'error_code': MONGO_PREFIX+'11', 'error_message': 'Error at saving data'},
 }

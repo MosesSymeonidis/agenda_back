@@ -7,6 +7,8 @@ from flask import current_app as app
 from flask import g as global_storage
 from Models.GeneralEmbeddedDocuments import Address
 from Models.Utils import Config
+from Utils.Exceptions.User import *
+
 import datetime
 
 class PersonalInfo(EmbeddedDocument):
@@ -141,9 +143,21 @@ class User(Document):
     def check_role(self,role):
         return role in self.roles
 
+    @property
+    def owned_businesses(self):
+        from Models.Business import Business
+        return Business.objects.filter(owner=self).all()
+
+    def assertion_of_businesses_num(self):
+        if hasattr(self,'plan') and self.plan is not None:
+            if len(self.owned_businesses)>=self.plans['settings'][self.plan]['business_limit']:
+                raise MaxBusinessLimit(self.plan)
+        else:
+            raise UserHasNotPlan()
+
     def assertion_role(self,role):
-        if self.check_role(role):
-            raise Exception
+        if not self.check_role(role):
+            raise RoleError(role)
 
     def set_bio(self,discription):
         self.bio = Bio(description=discription)
