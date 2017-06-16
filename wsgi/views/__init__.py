@@ -1,13 +1,14 @@
 from Utils.utils import json_response
 from flask.views import MethodView
 from flask import request
-class BaseView( MethodView ):
+
+
+class GeneralView(MethodView):
+
     def __init__(self):
 
         self.request = request
 
-
-    @json_response
     def dispatcher(self,**kwargs):
         if self.request.method == 'GET':
             return self.get(**kwargs)
@@ -38,3 +39,14 @@ class BaseView( MethodView ):
 
     def delete(self,**kwargs):
         return "ECHO: DELETE"
+
+
+class BaseView(GeneralView):
+
+    @json_response
+    def dispatcher(self,**kwargs):
+        return super(BaseView, self).dispatcher(**kwargs)
+
+
+
+

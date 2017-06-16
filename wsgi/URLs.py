@@ -35,7 +35,10 @@ main_urls = {
         'endpoint':'configs'},
     '/translations/<string:lang>/':{
         'class':'views.Translations.Translations',
-        'endpoint':'translations'}
+        'endpoint':'translations'},
+    '/<string:bussiness_id>/<string:type>/CSV':{
+        'class':'views.ExportImport.CSV',
+        'endpoint':'export_import_csv'},
 
 }
 

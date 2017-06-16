@@ -1,6 +1,7 @@
 from mongoengine import *
 from Models.User import User
 from Models.Utils import Config
+from Models import Bussiness
 from mongoengine.errors import InvalidDocumentError
 
 
@@ -18,7 +19,8 @@ class Service(Document):
     duration = FloatField(required=True, choices=schema['services']['duration'])
     employees = ListField(ReferenceField(User))
     max_clients = IntField(min_value=1, default=1, required=True)
-
+    #
+    # bussiness_id = ReferenceField(Bussiness.Bussiness)
 
     #TODO check again this
     def save(self, force_insert=False, validate=True, clean=True,

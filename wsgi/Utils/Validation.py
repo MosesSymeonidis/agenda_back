@@ -1,4 +1,5 @@
-from Utils.Exceptions.GeneralExceptions import ParameterDoesNotExists
+from Utils.Exceptions.GeneralExceptions import ParameterDoesNotExists, MethodError
+
 
 class RequestValidation():
     @staticmethod
@@ -10,18 +11,21 @@ class RequestValidation():
         """
         def assertions(func):
             def func_wrapper(self,*args,**kwargs):
-                if args_or_form == 'args':
-                    for parameter in parameters:
-                        if parameter not in self.request.args:
-                            raise ParameterDoesNotExists(parameter)
-                elif args_or_form == 'form':
-                    for parameter in parameters:
-                        if parameter not in self.request.form:
-                            raise ParameterDoesNotExists(parameter)
-                else:
-                    for parameter in parameters:
-                        if parameter not in self.request.get_json():
-                            raise ParameterDoesNotExists(parameter)
+                try:
+                    if args_or_form == 'args':
+                        for parameter in parameters:
+                            if parameter not in self.request.args:
+                                raise ParameterDoesNotExists(parameter)
+                    elif args_or_form == 'form':
+                        for parameter in parameters:
+                            if parameter not in self.request.form:
+                                raise ParameterDoesNotExists(parameter)
+                    else:
+                        for parameter in parameters:
+                            if parameter not in self.request.get_json():
+                                raise ParameterDoesNotExists(parameter)
+                except TypeError:
+                    raise MethodError(type=args_or_form)
                 return func(self,*args,**kwargs)
 
             return func_wrapper

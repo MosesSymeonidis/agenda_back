@@ -9,9 +9,10 @@ auth = User.auth
 
 class Bussiness(BaseView):
 
-    @RequestValidation.parameters_assertion(parameters=['data'])
+    @RequestValidation.parameters_assertion(parameters=['data'],args_or_form='json')
     @auth.login_required
     def post(self):
+        print('yolo')
         user = global_storage.user
         user.check_role(User.SHOP_OWNER_ROLE)
         data = self.request.args['data']
