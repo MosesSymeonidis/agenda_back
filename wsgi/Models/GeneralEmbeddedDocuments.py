@@ -1,7 +1,7 @@
 from mongoengine import *
 
-class Address(EmbeddedDocument):
 
+class Address(EmbeddedDocument):
 
     country = StringField()
     area = StringField()

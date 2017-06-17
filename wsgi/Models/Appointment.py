@@ -1,6 +1,6 @@
 from mongoengine import *
-from Models.User import User
-from Models.Service import Service
+from Models import User
+from Models import Service
 import datetime
 
 class TimeSlot(Document):

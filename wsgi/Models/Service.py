@@ -1,14 +1,13 @@
 from mongoengine import *
-from Models.User import User
 from Models.Utils import Config
 from mongoengine.errors import InvalidDocumentError
-
-
-schema = Config.objects.get(config_id='schema')
+from Models.Business import Business
+from Models.User import User
 
 
 class Service(Document):
-
+    schema = Config.objects.get(config_id='schema')
+    # from Models import User as model_user_at_service
     name = StringField(required=True, max_length=200)
 
     official_name = StringField(required=True, max_length=200)
@@ -19,7 +18,7 @@ class Service(Document):
     employees = ListField(ReferenceField(User))
     max_clients = IntField(min_value=1, default=1, required=True)
     #
-    # bussiness_id = ReferenceField(Bussiness.Bussiness)
+    bussiness = ReferenceField(Business)
 
     #TODO check again this
     def save(self, force_insert=False, validate=True, clean=True,
@@ -38,3 +37,6 @@ class Service(Document):
         return super(Document, self).save(force_insert=False, validate=True, clean=True,
              write_concern=None, cascade=None, cascade_kwargs=None,
              _refs=None, save_condition=None, signal_kwargs=None, **kwargs)
+
+
+

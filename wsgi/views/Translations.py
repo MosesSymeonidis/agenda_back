@@ -25,7 +25,7 @@ class Translations(BaseView):
         saved_lang = Config.objects.get(config_id='general')['admin']['translation_update_lang_parameter']
 
         if lang != saved_lang:
-            return {'success': False}
+            raise Exception
 
         from app import app
         from Models.Utils import Translation

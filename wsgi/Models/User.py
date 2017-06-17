@@ -1,37 +1,52 @@
-from mongoengine import *
-from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
+
+from flask import current_app as app
+from flask import g as global_storage
 from flask_httpauth import HTTPBasicAuth
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
-from flask import current_app as app
-from flask import g as global_storage
+from mongoengine import *
+from werkzeug.security import generate_password_hash, check_password_hash
 from Models.GeneralEmbeddedDocuments import Address
 from Models.Utils import Config
 from Utils.Exceptions.User import *
-
-import datetime
-
-class PersonalInfo(EmbeddedDocument):
-    name = StringField(required=True)
-    surname = StringField(required=True)
-    birthday = DateTimeField(required=True)
-    gender = StringField(choices=('male','female','other'),required=True)
-    profile_pic = ImageField() #TODO check it again for easier way
-
-class Bio(EmbeddedDocument):
-    description = MultiLineStringField()
-
+from Models.Business import Business
 
 class User(Document):
+
+    class PersonalInfo(EmbeddedDocument):
+        name = StringField(required=True)
+        surname = StringField(required=True)
+        birthday = DateTimeField(required=True)
+        gender = StringField(choices=('male', 'female', 'other'), required=True)
+        profile_pic = ImageField()  # TODO check it again for easier way
+
+    class Bio(EmbeddedDocument):
+        description = MultiLineStringField()
+
+    class Client(EmbeddedDocument):
+        business = ReferenceField(Business)
+        alias = StringField(required=True)
+        email = EmailField()
+        phone = StringField()
+        description = StringField()
+
+    class Employee(EmbeddedDocument):
+        business = ReferenceField(Business)
+        alias = StringField(required=True)
+        email = EmailField()
+        phone = StringField()
+
+    plans = Config.objects.get(config_id='plans')
 
     GUEST_ROLE = 'guest'
 
     PROFESSIONAL_ROLE = 'professional'
 
-    SHOP_OWNER_ROLE = 'shop_owner'
+    OWNER_ROLE = 'owner'
 
     username = StringField(max_length=200, required=True, unique=True)
-    email = EmailField(required=True,unique=True)
+    email = EmailField(required=True, unique=True)
     password = StringField(max_length=200, required=True)
     created_at = DateTimeField(default=datetime.datetime.now)
     activated = BooleanField(default=False)
@@ -39,21 +54,34 @@ class User(Document):
     deleted_at = DateTimeField()
     deleted = BooleanField(required=True, default=False)
 
-    role = StringField(required=True,
-                                  max_length=20,
-                                  choices=(GUEST_ROLE,PROFESSIONAL_ROLE,SHOP_OWNER_ROLE),
-                                  default=GUEST_ROLE)
+    roles = ListField(
+        StringField(max_length=20, choices=(PROFESSIONAL_ROLE, OWNER_ROLE, GUEST_ROLE), default=GUEST_ROLE))
 
-    plans = Config.objects.get(config_id='plans')
+    client = ListField(EmbeddedDocumentField(Client))
 
-    plan = StringField(choices=plans.distinct,max_length=10)
+    employee = ListField(EmbeddedDocumentField(Employee))
+
+    admin = ListField(ReferenceField(Business))
+
+    plan = StringField(choices=plans.distinct, max_length=10)
 
     personal_info = EmbeddedDocumentField(PersonalInfo)
     bio = EmbeddedDocumentField(Bio)
     address = Address
 
-    def get_roles(self):
-        return [self.GUEST_ROLE,self.PROFESSIONAL_ROLE,self.SHOP_OWNER_ROLE]
+    owned_businesses = ListField(Business)
+
+    @property
+    def is_business_owner(self):
+        return len(self.owned_businesses) > 0
+
+    @property
+    def permissions(self):
+        configs = Config.objects.get(config_id='general')
+        permissions = []
+        for role in self.roles:
+            permissions.append(configs['roles'][role]['permissions'])
+        return permissions
 
     def set_credentials(self, username, email, password):
         self.username = username
@@ -99,7 +127,7 @@ class User(Document):
         if not self.activated:
             raise Exception
 
-    def verify_activation( self,activation_code ):
+    def verify_activation(self, activation_code):
         s = Serializer(app.config['ACTIVATION_SECRET_KEY'])
         try:
             data = s.loads(activation_code)
@@ -112,6 +140,52 @@ class User(Document):
             self.marked_as_active()
             return True
         return False
+
+    def business_permissions(self, business):
+        permissions = []
+        if business in self.admin:
+            permissions.append('admin_permissions')
+
+        if business in [business_id['business_id'] for business_id in self.client]:
+            permissions.append('client_permissions')
+
+        if business in [business_id['business_id'] for business_id in self.employee]:
+            permissions.append('employee_permissions')
+        return permissions
+
+    def check_business_permissions(self, permission, business):
+        return permission in self.permissions(business)
+
+    def check_permissions(self, permission):
+        return permission in self.permissions
+
+    def assertion_of_businesses_num(self):
+        if hasattr(self, 'plan') and self.plan is not None:
+            if len(self.owned_businesses) >= self.plans['settings'][self.plan]['business_limit']:
+                raise MaxBusinessLimit(self.plan)
+        else:
+            raise UserHasNotPlan()
+
+    def assertion_role(self, role):
+        if not self.check_role(role):
+            raise RoleError(role)
+
+    def assertion_business_permission(self, permission, business):
+        if not self.check_business_permission(permission, business):
+            raise Exception
+
+    def assertion_permission(self, permission):
+        if not self.check_permission(permission):
+            raise Exception
+
+    def set_bio(self, discription):
+        self.bio = self.Bio(description=discription)
+
+    def set_personal_info(self, name, surname, birthday, gender):
+        self.personal_info = self.PersonalInfo(name=name, surname=surname, birthday=birthday, gender=gender)
+
+    def check_role(self, role):
+        return role in self.roles
 
     @staticmethod
     def verify_auth_token(token):
@@ -140,40 +214,3 @@ class User(Document):
         global_storage.user = user
         return True
 
-    def check_role(self,role):
-        return role == self.role
-
-    def check_permission(self,permission):
-        if permission in self.permissions:
-            return True
-        return False
-
-    @property
-    def permissions(self):
-        return Config.objects.get(config_id='general')['roles'][self.role]['permissions']
-
-    @property
-    def owned_businesses(self):
-        from Models.Business import Business
-        return Business.objects.filter(owner=self).all()
-
-    def assertion_of_businesses_num(self):
-        if hasattr(self,'plan') and self.plan is not None:
-            if len(self.owned_businesses)>=self.plans['settings'][self.plan]['business_limit']:
-                raise MaxBusinessLimit(self.plan)
-        else:
-            raise UserHasNotPlan()
-
-    def assertion_role(self,role):
-        if not self.check_role(role):
-            raise RoleError(role)
-
-    def assertion_permission(self, permission):
-        if not self.check_permission(permission):
-            raise Exception
-
-    def set_bio(self,discription):
-        self.bio = Bio(description=discription)
-
-    def set_personal_info(self, name, surname, birthday, gender ):
-        self.personal_info = PersonalInfo(name=name, surname=surname, birthday=birthday, gender=gender)
