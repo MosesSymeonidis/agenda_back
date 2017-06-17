@@ -19,7 +19,7 @@ class UserView(BaseView):
         user.set_credentials(username=name,email=email, password=password)
         role = kwargs['role'] if 'role' in kwargs else User.GUEST_ROLE
         if role:
-            user.roles = [role]
+            user.role = role
         user.save()
         activation_code = user.generate_activation_code()
 

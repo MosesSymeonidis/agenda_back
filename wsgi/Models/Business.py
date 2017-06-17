@@ -3,6 +3,7 @@ from mongoengine import *
 from Models.GeneralEmbeddedDocuments import Address
 from Models.User import User
 from Models.Service import Service
+from Models.Utils import Config
 
 import datetime
 
@@ -13,11 +14,15 @@ class Business(Document):
     settings = DictField()
 
     address = EmbeddedDocumentField(Address)
-    plan = StringField()
-    
-    owner = ReferenceField(User)
+
+    owner = ReferenceField(User, required=True)
     employees = ListField(ReferenceField(User))
     clients = ListField(ReferenceField(User))
 
     services = ListField(ReferenceField(Service))
+
+    @property
+    def features(self):
+        plans = Config.objects.get(config_id='plans')
+        return plans['settings'][self.owner.plan]['features']
 

@@ -80,8 +80,8 @@ def get_database():
     Returns the client object of mongodb
     :return: client object of mongodb
     """
-    client = connect(host=app.config['MONGODB_STRING'], db=app.config['MONGODB_DATABASE'])
-    return client[app.config['MONGODB_DATABASE']]
+    client = connect(host=app.config['MONGODB_SETTINGS']['host'], db=app.config['MONGODB_SETTINGS']['db'])
+    return client[app.config['MONGODB_SETTINGS']['db']]
 
 
 def async(f):

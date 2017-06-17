@@ -36,20 +36,27 @@ class Translation(DynamicDocument):
     @staticmethod
     def importFromCSVFile(csvfile):
         import csv
+        from Utils.utils import get_database
         reader_list = csv.DictReader(csvfile)
         i = 1
+        db = get_database()
+        translations = db.translation.initialize_unordered_bulk_op()
         for row in reader_list:
 
             try:
                 entity = Translation()
                 for field in row:
                     entity.__setattr__(field,row[field])
-                entity.save()
+
+                    translations.find({'_id':entity.id}).upsert().update({'$set':entity.to_mongo()})
                 print('The '+str(i)+' translation inserted')
                 i += 1
             except ValidationError:
-                print(ValidationError)
                 pass
+
+        print(translations)
+        translations.execute()
+
 
     @staticmethod
     def get_translations(lang):

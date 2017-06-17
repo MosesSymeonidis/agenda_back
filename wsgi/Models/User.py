@@ -39,10 +39,10 @@ class User(Document):
     deleted_at = DateTimeField()
     deleted = BooleanField(required=True, default=False)
 
-    roles = ListField(StringField(required=True,
+    role = StringField(required=True,
                                   max_length=20,
                                   choices=(GUEST_ROLE,PROFESSIONAL_ROLE,SHOP_OWNER_ROLE),
-                                  default=GUEST_ROLE))
+                                  default=GUEST_ROLE)
 
     plans = Config.objects.get(config_id='plans')
 
@@ -141,7 +141,16 @@ class User(Document):
         return True
 
     def check_role(self,role):
-        return role in self.roles
+        return role == self.role
+
+    def check_permission(self,permission):
+        if permission in self.permissions:
+            return True
+        return False
+
+    @property
+    def permissions(self):
+        return Config.objects.get(config_id='general')['roles'][self.role]['permissions']
 
     @property
     def owned_businesses(self):
@@ -158,6 +167,10 @@ class User(Document):
     def assertion_role(self,role):
         if not self.check_role(role):
             raise RoleError(role)
+
+    def assertion_permission(self, permission):
+        if not self.check_permission(permission):
+            raise Exception
 
     def set_bio(self,discription):
         self.bio = Bio(description=discription)
