@@ -3,6 +3,7 @@ from views import BaseView
 
 class test(BaseView):
     def get(self):
+        print(self.request.MOBILE)
         # from flask_mail import Message as FlaskMessage
         # from flask_mail import Mail
         # msg = FlaskMessage(

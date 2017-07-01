@@ -10,6 +10,7 @@ from Models.Utils import Config, Traffic
 from Utils.utils import json_response, str_import, save_request, save_response
 from flask import request
 from flask import g as global_storage
+import flask_mobility
 
 db = MongoEngine()
 app = Flask(__name__)
@@ -30,6 +31,8 @@ mail.init_app(app=app)
 
 sentry = Sentry(dsn='https://4e1a812ea958463fbda2cf92b8f111cc:53072bf456b144db88dbf8c7edbcf7ea@sentry.io/177217')
 sentry.init_app(app)
+flask_mobility.Mobility().init_app(app=app)
+
 routes = URLs.get_urls()
 
 for route in routes:

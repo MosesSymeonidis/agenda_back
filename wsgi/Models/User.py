@@ -26,18 +26,23 @@ class User(Document):
 
     class Client(EmbeddedDocument):
         business = ReferenceField(Business)
-        alias = StringField(required=True)
+        alias = StringField()#TODO required=True)
         email = EmailField()
         phone = StringField()
         description = StringField()
 
     class Employee(EmbeddedDocument):
         business = ReferenceField(Business)
-        alias = StringField(required=True)
+        alias = StringField()#TODO required=True)
         email = EmailField()
         phone = StringField()
 
     plans = Config.objects.get(config_id='plans')
+
+    TYPE_ADMIN = 'admin'
+    TYPE_CLIENT = 'client'
+    TYPE_EMPLOYEE = 'employee'
+
 
     GUEST_ROLE = 'guest'
 
@@ -55,7 +60,7 @@ class User(Document):
     deleted = BooleanField(required=True, default=False)
 
     roles = ListField(
-        StringField(max_length=20, choices=(PROFESSIONAL_ROLE, OWNER_ROLE, GUEST_ROLE), default=GUEST_ROLE))
+        StringField(max_length=20, choices=(PROFESSIONAL_ROLE, OWNER_ROLE, GUEST_ROLE)),default=[GUEST_ROLE])
 
     client = ListField(EmbeddedDocumentField(Client))
 
@@ -69,7 +74,7 @@ class User(Document):
     bio = EmbeddedDocumentField(Bio)
     address = Address
 
-    owned_businesses = ListField(Business)
+    owned_businesses = ListField(ReferenceField(Business))
 
     @property
     def is_business_owner(self):
@@ -82,6 +87,18 @@ class User(Document):
         for role in self.roles:
             permissions.append(configs['roles'][role]['permissions'])
         return permissions
+
+    def set_admin_business(self, business):
+        self.admin.append(business)
+
+    def set_client_business(self, client):
+        self.client.append(client)
+
+    def set_employee_business(self, employee):
+        self.employee.append(employee)
+
+    def set_owned_business(self, business):
+        self.owned_businesses.append(business)
 
     def set_credentials(self, username, email, password):
         self.username = username
@@ -185,6 +202,7 @@ class User(Document):
         self.personal_info = self.PersonalInfo(name=name, surname=surname, birthday=birthday, gender=gender)
 
     def check_role(self, role):
+        print(self.roles)
         return role in self.roles
 
     @staticmethod

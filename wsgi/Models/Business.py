@@ -30,4 +30,7 @@ class Business(Document):
         plans = Config.objects.get(config_id='plans')
         return plans['settings'][self.owner.plan]['features']
 
-
+    @property
+    def services(self):
+        from Models.Service import Service
+        return Service.objects(business=self).all()

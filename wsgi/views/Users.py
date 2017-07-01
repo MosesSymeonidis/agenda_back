@@ -10,7 +10,7 @@ from flask import g as global_storage
 
 class UserView(BaseView):
 
-    @RequestValidation.parameters_assertion(parameters=['name', 'password', 'email'],args_or_form='json')
+    @RequestValidation.parameters_assertion(parameters=['username', 'password', 'email'],args_or_form='json')
     def post(self, **kwargs):
         name = self.request.get_json()['username']
         password = self.request.get_json()['password']

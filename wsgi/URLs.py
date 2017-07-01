@@ -18,7 +18,7 @@ main_urls = {
     '/service':{
         'class':'views.Business.Service',
         'endpoint':'service'},
-    '/business/<string:business_id>/<string:role>/<string:user_id>':{
+    '/business/<string:business_id>/<string:type>/<string:user_id>':{
         'class':'views.Business.BusinessPeaple',
         'endpoint':'business_peaple'},
     '/business/<string:business_id>/settings':{
