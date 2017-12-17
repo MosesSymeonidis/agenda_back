@@ -45,7 +45,7 @@ main_urls = {
 }
 
 debug_urls = {
-    '/test/<business:business>':{
+    '/test/<model(model="Business"):business>':{
         'class':'views.test.test',
         'endpoint':'test'},
     '/test/': {

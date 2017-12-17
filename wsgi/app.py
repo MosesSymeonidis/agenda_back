@@ -5,11 +5,10 @@ from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 from raven.contrib.flask import Sentry
 import URLs
-from utils.base import json_response, str_import, save_request, save_response
+from utils.base import json_response, str_import, save_request, save_response, ModelConverter
 from flask import request
 from flask import g as global_storage
 import flask_mobility
-from utils.base import generate_model_converter
 from mongoengine import Document
 
 
@@ -65,11 +64,13 @@ def create_app( is_sentry_on=False, **kwargs):
     @app.errorhandler(500)
     @json_response
     def page_not_found_500(error):
+        print(error)
         return general_exceptions.BASIC_ERROR_500
 
     @app.errorhandler(404)
     @json_response
     def page_not_found_404(error):
+        print(error)
         return general_exceptions.BASIC_ERROR_500
 
     @app.before_request
@@ -87,13 +88,8 @@ def create_app( is_sentry_on=False, **kwargs):
         return resp
 
     routes = URLs.get_urls()
-    print(dir(models))
-    import inspect
-    for i in dir(models):
-        temp_class = getattr(models,i)
-        if inspect.isclass(temp_class) and issubclass(temp_class, Document):
 
-            app.url_map.converters[i.lower()] = generate_model_converter(temp_class)
+    app.url_map.converters['model'] = ModelConverter
 
 
     for route in routes:

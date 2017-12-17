@@ -2,14 +2,15 @@ from flask import jsonify
 from mongoengine.queryset.queryset import QuerySet
 from bson import objectid
 from datetime import datetime
-from werkzeug.routing import BaseConverter
+from werkzeug.routing import BaseConverter, UUIDConverter, ValidationError
 import os
 import tempfile
 import json
 from flask import current_app as app
-from mongoengine import connect, DoesNotExist
+from mongoengine import connect, DoesNotExist, Document
 from threading import Thread
 
+import inspect
 
 def bson_handler(x):
     """
@@ -132,26 +133,30 @@ def save_response(resp):
     return json.loads(json.dumps(obj=resp_data, default=bson_handler))
 
 
-def generate_model_converter(model):
-    """
-    Genarates model to url converter for every model entity
-    :param model: The current model
-    :return: The converter
-    """
-    class Converter(BaseConverter):
-        def to_python(self, value):
+
+class ModelConverter(BaseConverter):
+    def __init__(self,map, model=None):
+        import models
+        BaseConverter.__init__(self, map)
+        self.model = None
+        if model in dir(models):
+
+            temp_class = getattr(models, model)
+
+            if inspect.isclass(temp_class) and issubclass(temp_class, Document):
+                self.model = temp_class
+
+    def to_python(self, value):
+
+        if self.model:
             try:
-                res = model.objects.get(id=value)
-                if res:
-                    return res
-                else:
-                    return model()
-            except DoesNotExist:
-                return model()
+                return self.model.objects.get(id=value)
+            except:
+                raise ValidationError()
+        raise ValidationError()
 
-        def to_url(self, value):
-            if isinstance(value, model):
-                value = value.id
-            return super(Converter, self).to_url(value)
+    def to_url(self, value):
+        if isinstance(value, self.model):
+            value = value.id
+        return super(ModelConverter, self).to_url(value)
 
-    return Converter
