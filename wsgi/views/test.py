@@ -1,7 +1,7 @@
 from views import BaseView
-
+import models
 class test(BaseView):
-    def get(self):
+    def get(self, business = None):
         # from flask_mail import Message as FlaskMessage
         # from flask_mail import Mail
         #
@@ -22,4 +22,6 @@ class test(BaseView):
         # # MailTemplate(template_id='test', language='EN',title='aaaaaaaaaaa', template_path='mails/activation_mail.html').save()
         # mail = Mail(language='EN',template_id='test',send_to='msymewnidhs2113@yahoo.gr', send_from='info@taxicab.me',vars={'yolo':'asdfasd'})
         # mail.send()
+        models.Business.objects.get(id='5916c4a6982bce88511cec8c')
+        print(business)
         return {'yolo':True}

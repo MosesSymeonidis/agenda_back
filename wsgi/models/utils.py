@@ -9,11 +9,6 @@ class Traffic(DynamicDocument):
     meta = {'queryset_class': AggregateQuerySet}
     created_at = DateTimeField(default=datetime.datetime.now)
 
-
-from mongoengine import *
-
-
-
 class Translation(DynamicDocument):
 
     _id = StringField(unique=True,primary_key=True)

@@ -2,12 +2,12 @@ from flask import jsonify
 from mongoengine.queryset.queryset import QuerySet
 from bson import objectid
 from datetime import datetime
-from pymongo.cursor import Cursor
+from werkzeug.routing import BaseConverter
 import os
 import tempfile
 import json
 from flask import current_app as app
-from mongoengine import connect
+from mongoengine import connect, DoesNotExist
 from threading import Thread
 
 
@@ -19,8 +19,8 @@ def bson_handler(x):
     """
     if isinstance(x, datetime):
         return x.isoformat()
-    elif x in [True,False]:
-        if x :
+    elif x in [True, False]:
+        if x:
             return 'True'
         else:
             return 'False'
@@ -28,7 +28,7 @@ def bson_handler(x):
         return str(x)
     elif callable(getattr(x, "to_mongo", None)):
         return x.to_mongo()
-    elif isinstance(x,QuerySet):
+    elif isinstance(x, QuerySet):
         res = []
         for i in x:
             res.append(i.to_mongo(fields=x._loaded_fields.fields))
@@ -62,7 +62,6 @@ def json_response(func):
     return func_wrapper
 
 
-
 def str_import(name):
     """
     Gets the name of the view and returns the appropriate function
@@ -90,9 +89,11 @@ def async(f):
     :param f:
     :return:
     """
+
     def wrapper(*args, **kwargs):
         thr = Thread(target=f, args=args, kwargs=kwargs)
         thr.start()
+
     return wrapper
 
 
@@ -116,10 +117,11 @@ def save_request(request):
         filesize = os.stat(dst.name).st_size
         dst.close()
         files.append({'name': name, 'filename': fs.filename, 'filesize': filesize,
-         'mimetype': fs.mimetype, 'mimetype_params': fs.mimetype_params})
+                      'mimetype': fs.mimetype, 'mimetype_params': fs.mimetype_params})
     req_data['files'] = files
 
     return json.loads(json.dumps(obj=req_data, default=bson_handler))
+
 
 def save_response(resp):
     resp_data = {}
@@ -128,3 +130,28 @@ def save_response(resp):
     resp_data['headers'] = dict(resp.headers)
     resp_data['data'] = resp.response
     return json.loads(json.dumps(obj=resp_data, default=bson_handler))
+
+
+def generate_model_converter(model):
+    """
+    Genarates model to url converter for every model entity
+    :param model: The current model
+    :return: The converter
+    """
+    class Converter(BaseConverter):
+        def to_python(self, value):
+            try:
+                res = model.objects.get(id=value)
+                if res:
+                    return res
+                else:
+                    return model()
+            except DoesNotExist:
+                return model()
+
+        def to_url(self, value):
+            if isinstance(value, model):
+                value = value.id
+            return super(Converter, self).to_url(value)
+
+    return Converter

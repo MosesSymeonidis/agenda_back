@@ -9,6 +9,8 @@ from utils.base import json_response, str_import, save_request, save_response
 from flask import request
 from flask import g as global_storage
 import flask_mobility
+from utils.base import generate_model_converter
+from mongoengine import Document
 
 
 def create_app( is_sentry_on=False, **kwargs):
@@ -20,8 +22,6 @@ def create_app( is_sentry_on=False, **kwargs):
     db=MongoEngine()
 
     CORS(app)
-
-    print('asdfasdfasdfas1')
 
     if 'TESTING' in kwargs and kwargs['TESTING']:
         app.testing = True
@@ -40,16 +40,12 @@ def create_app( is_sentry_on=False, **kwargs):
             'host': 'mongodb://cbuser:092hdfkv245@ds053305.mlab.com:53305/cheapbookdev'
         }
         db.init_app(app)
-    print('asdfasdfasdfas5')
+
     import models
-    app.models = models
-    print(models.Config.objects)
-    print (models.Config.objects.get(config_id='initials'))
     configs = models.Config.objects.get(config_id='initials')
     app.config.from_object(configs)
     app.config['DEBUG']=False
-    print('asdfasdfasdfas6')
-    print(app.models)
+
 
     mail = flask_mail.Mail()
     mail.init_app(app=app)
@@ -57,17 +53,6 @@ def create_app( is_sentry_on=False, **kwargs):
         sentry = Sentry(dsn='https://4e1a812ea958463fbda2cf92b8f111cc:53072bf456b144db88dbf8c7edbcf7ea@sentry.io/177217')
         sentry.init_app(app)
     flask_mobility.Mobility().init_app(app=app)
-
-    routes = URLs.get_urls()
-    print('asdfasdfasdfas6')
-
-    for route in routes:
-        imported_class = str_import(routes[route]['class'])
-
-        route_object = imported_class()
-        app.add_url_rule(route, view_func=route_object.dispatcher, endpoint=routes[route]['endpoint'],
-                         methods=['GET', 'POST', 'PUT', 'DELETE'])
-    print('asdfasdfasdfas6')
 
     from utils.exception_handler import error_dict, Handler
 
@@ -92,7 +77,6 @@ def create_app( is_sentry_on=False, **kwargs):
         request_data = save_request(request)
         global_storage.request_data=request_data
 
-    print('asdfasdfasdfas6')
 
     @app.after_request
     def after_request(resp):
@@ -102,7 +86,23 @@ def create_app( is_sentry_on=False, **kwargs):
         traffic.save()
         return resp
 
-    print('asdfasdfasdfas6')
+    routes = URLs.get_urls()
+    print(dir(models))
+    import inspect
+    for i in dir(models):
+        temp_class = getattr(models,i)
+        if inspect.isclass(temp_class) and issubclass(temp_class, Document):
+
+            app.url_map.converters[i.lower()] = generate_model_converter(temp_class)
+
+
+    for route in routes:
+        imported_class = str_import(routes[route]['class'])
+
+        route_object = imported_class()
+        app.add_url_rule(route, view_func=route_object.dispatcher, endpoint=routes[route]['endpoint'],
+                         methods=['GET', 'POST', 'PUT', 'DELETE'])
+
     return app
 
 if __name__ == "__main__":

@@ -45,9 +45,13 @@ main_urls = {
 }
 
 debug_urls = {
-    '/test':{
+    '/test/<business:business>':{
         'class':'views.test.test',
-        'endpoint':'test'} }
+        'endpoint':'test'},
+    '/test/': {
+        'class': 'views.test.test',
+        'endpoint': 'test2'},
+}
 
 def get_urls():
     main_urls.update(debug_urls)
