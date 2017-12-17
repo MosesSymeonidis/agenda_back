@@ -7,6 +7,7 @@ apt-get install -y python3-setuptools
 apt-get install -y python3-venv
 apt-get install -y virtualenv
 apt-get install -y uwsgi uwsgi-plugin-python3 nginx-full python-setuptools python-pip
+apt-get install -y upstart
 
 
 git clone https://MosesSymeonidis:%40Moses2113@github.com/nekkon/agenda_back.git

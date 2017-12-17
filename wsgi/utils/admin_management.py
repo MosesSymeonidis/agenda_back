@@ -1,6 +1,6 @@
 from flask import Response, request
 from functools import wraps
-from Models.Utils import Config
+import models
 
 
 def check_admin_auth(username, password):
@@ -8,7 +8,7 @@ def check_admin_auth(username, password):
     password combination is valid.
     """
     try:
-        res = Config.objects.get(config_id='general')['admin']
+        res = models.Config.objects.get(config_id='general')['admin']
         return username == res['username'] and password == res['password']
     except Exception:
         raise Exception

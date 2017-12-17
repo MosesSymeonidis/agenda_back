@@ -1,43 +1,45 @@
+
+
 main_urls = {
     '/auth':{
-        'class':'views.Users.token',
+        'class':'views.users.token',
         'endpoint':'auth'},
     '/user/<string:role>':{
-        'class':'views.Users.UserView',
+        'class':'views.users.UserView',
         'endpoint':'user_role'},
     '/user':{
-        'class':'views.Users.UserView',
+        'class':'views.users.UserView',
         'endpoint':'user_guest'},
     '/activation/<string:user_id>':{
-        'class':'views.Users.Activation',
+        'class':'views.users.Activation',
         'endpoint':'activation'},
     '/business':{
-        'class':'views.Business.Business',
+        'class':'views.business.Business',
         'endpoint':'business'},
 #    '/service/<string:type':'',
     '/service':{
-        'class':'views.Business.Service',
+        'class':'views.business.Service',
         'endpoint':'service'},
     '/business/<string:business_id>/<string:type>/<string:user_id>':{
-        'class':'views.Business.BusinessPeaple',
+        'class':'views.business.BusinessPeaple',
         'endpoint':'business_peaple'},
     '/business/<string:business_id>/settings':{
-        'class':'views.Business.Settings',
+        'class':'views.business.Settings',
         'endpoint':'business_settings'},
     '/appointment':{
-        'class':'views.Appointment.Appointment',
+        'class':'views.appointment.Appointment',
         'endpoint':'new_appointment'},
     '/appointment/<string:id>':{
-        'class':'views.Appointment.Appointment',
+        'class':'views.appointment.Appointment',
         'endpoint':'created_appointment'},
     '/schema':{
-        'class':'views.Config.Config',
+        'class':'views.config.Config',
         'endpoint':'configs'},
     '/translations/<string:lang>/':{
-        'class':'views.Translations.Translations',
+        'class':'views.translations.Translations',
         'endpoint':'translations'},
     '/<string:business_id>/<string:type>/CSV':{
-        'class':'views.ExportImport.CSV',
+        'class':'views.exportImport.CSV',
         'endpoint':'export_import_csv'},
 
 }

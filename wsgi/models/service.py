@@ -1,12 +1,9 @@
 from mongoengine import *
-from Models.Utils import Config
-from mongoengine.errors import InvalidDocumentError
-from Models.Business import Business
-from Models.User import User
-
+from flask import current_app as app
+import models
 
 class Service(Document):
-    schema = Config.objects.get(config_id='schema')
+    schema = models.Config.objects.get(config_id='schema')
     # from Models import User as model_user_at_service
     name = StringField(required=True, max_length=200)
 
@@ -15,10 +12,10 @@ class Service(Document):
     tags = ListField(StringField(max_length=200))
 
     duration = FloatField(required=True, choices=schema['services']['duration'])
-    employees = ListField(ReferenceField(User))
+    employees = ListField(ReferenceField(models.User))
     max_clients = IntField(min_value=1, default=1, required=True)
     #
-    bussiness = ReferenceField(Business)
+    bussiness = ReferenceField(models.Business)
 
     #TODO check again this
     def save(self, force_insert=False, validate=True, clean=True,

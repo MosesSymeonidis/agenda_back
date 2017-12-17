@@ -1,6 +1,6 @@
 from views import GeneralView
 from flask import Response
-from Models.Business import Business
+from models.business import Business
 from bson import ObjectId
 
 class CSV(GeneralView):

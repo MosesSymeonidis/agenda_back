@@ -1,9 +1,9 @@
 from mongoengine import *
-from Models import User
-from Models import Service
 import datetime
+import models
 
 class TimeSlot(Document):
+    meta = {'allow_inheritance': True}
     start = DateTimeField(required=True)
     end = DateTimeField(required=True)
     created_at = DateTimeField(default=datetime.datetime.now)
@@ -11,7 +11,7 @@ class TimeSlot(Document):
     created_by_admin = BooleanField(required=True, default=False)
     deleted_at = DateTimeField()
     deleted = BooleanField(required=True, default=False)
-    modified_from = ReferenceField(User, required=True)
+    modified_from = ReferenceField(models.User, required=True)
     history = ListField(DictField())
 
 class Break(TimeSlot):
@@ -25,9 +25,9 @@ class Appointment(TimeSlot):
     DEVICE_MOBILE = 'mobile'
     DEVICE_DESKTOP = 'desktop'
 
-    employee = ReferenceField(User, required=True)
-    service = ReferenceField(Service, required=True)
-    clients = ListField(ReferenceField(User), required=True)
+    employee = ReferenceField(models.User, required=True)
+    service = ReferenceField(models.Service, required=True)
+    clients = ListField(ReferenceField(models.User), required=True)
 
     delete_reason = StringField(choices=(DELETED_REASON_BY_ADMIN, DELETED_REASON_NO_SHOW))
     device = StringField(required=True, default=DEVICE_DESKTOP,choices=(DEVICE_MOBILE, DEVICE_DESKTOP))

@@ -1,10 +1,12 @@
 from mongoengine import *
 import datetime
+from aggregation_builder import AggregateQuerySet
 
 class Config(DynamicDocument):
     pass
 
 class Traffic(DynamicDocument):
+    meta = {'queryset_class': AggregateQuerySet}
     created_at = DateTimeField(default=datetime.datetime.now)
 
 
@@ -36,7 +38,7 @@ class Translation(DynamicDocument):
     @staticmethod
     def importFromCSVFile(csvfile):
         import csv
-        from Utils.utils import get_database
+        from utils.base import get_database
         reader_list = csv.DictReader(csvfile)
         i = 1
         db = get_database()

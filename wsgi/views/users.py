@@ -1,9 +1,8 @@
 from views import BaseView
-from Utils.Validation import RequestValidation
+from utils.validation import RequestValidation
+import models
 
-from Models.User import User
-
-auth = User.auth
+auth = models.User.auth
 from flask import render_template
 from flask import g as global_storage
 
@@ -15,9 +14,9 @@ class UserView(BaseView):
         name = self.request.get_json()['username']
         password = self.request.get_json()['password']
         email = self.request.get_json()['email']
-        user = User()
+        user = models.User()
         user.set_credentials(username=name,email=email, password=password)
-        role = kwargs['role'] if 'role' in kwargs else User.GUEST_ROLE
+        role = kwargs['role'] if 'role' in kwargs else models.User.GUEST_ROLE
         if role:
             user.role = role
         user.save()
@@ -32,7 +31,7 @@ class UserView(BaseView):
     @RequestValidation.parameters_assertion(parameters=['id'])
     def get(self):
         id = self.request.args['id']
-        user = User.objects.get(pk=id)
+        user = models.User.objects.get(pk=id)
         return user.to_mongo(fields=['_id', 'username'])
 
 
@@ -44,7 +43,7 @@ class UserView(BaseView):
 
         user.assertion_is_activated()
         user.assertion_is_not_deleted()
-        role = kwargs['role'] if 'role' in kwargs else User.GUEST_ROLE
+        role = kwargs['role'] if 'role' in kwargs else models.User.GUEST_ROLE
         if role:
             user.roles = [role]
 
@@ -78,7 +77,7 @@ class Activation(BaseView):
 
     @RequestValidation.parameters_assertion(parameters=['activation_code'])
     def get(self, **kwargs):
-        user = User.objects.get(pk=kwargs['user_id'])
+        user = models.User.objects.get(pk=kwargs['user_id'])
         res = user.verify_activation(self.request.args.get('activation_code'))
 
         return { 'ok': res}

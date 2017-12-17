@@ -1,4 +1,4 @@
-from Utils.Exceptions import BasicException
+from utils.exceptions import BasicException
 
 PREFIX_CODE = 'ge'
 

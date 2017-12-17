@@ -1,4 +1,4 @@
-from Utils.Exceptions.GeneralExceptions import ParameterDoesNotExists, MethodError
+from utils.exceptions.general_exceptions import ParameterDoesNotExists, MethodError
 
 
 class RequestValidation():

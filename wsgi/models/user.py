@@ -1,5 +1,4 @@
 import datetime
-
 from flask import current_app as app
 from flask import g as global_storage
 from flask_httpauth import HTTPBasicAuth
@@ -7,10 +6,9 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from mongoengine import *
 from werkzeug.security import generate_password_hash, check_password_hash
-from Models.GeneralEmbeddedDocuments import Address
-from Models.Utils import Config
-from Utils.Exceptions.User import *
-from Models.Business import Business
+
+from utils.exceptions.user import *
+import models
 
 class User(Document):
 
@@ -25,19 +23,19 @@ class User(Document):
         description = MultiLineStringField()
 
     class Client(EmbeddedDocument):
-        business = ReferenceField(Business)
+        business = ReferenceField(models.Business)
         alias = StringField()#TODO required=True)
         email = EmailField()
         phone = StringField()
         description = StringField()
 
     class Employee(EmbeddedDocument):
-        business = ReferenceField(Business)
+        business = ReferenceField(models.Business)
         alias = StringField()#TODO required=True)
         email = EmailField()
         phone = StringField()
 
-    plans = Config.objects.get(config_id='plans')
+    plans = models.Config.objects.get(config_id='plans')
 
     TYPE_ADMIN = 'admin'
     TYPE_CLIENT = 'client'
@@ -66,15 +64,15 @@ class User(Document):
 
     employee = ListField(EmbeddedDocumentField(Employee))
 
-    admin = ListField(ReferenceField(Business))
+    admin = ListField(ReferenceField(models.Business))
 
     plan = StringField(choices=plans.distinct, max_length=10)
 
     personal_info = EmbeddedDocumentField(PersonalInfo)
     bio = EmbeddedDocumentField(Bio)
-    address = Address
+    address = models.Address
 
-    owned_businesses = ListField(ReferenceField(Business))
+    owned_businesses = ListField(ReferenceField(models.Business))
 
     @property
     def is_business_owner(self):
@@ -82,7 +80,7 @@ class User(Document):
 
     @property
     def permissions(self):
-        configs = Config.objects.get(config_id='general')
+        configs = models.Config.objects.get(config_id='general')
         permissions = []
         for role in self.roles:
             permissions.append(configs['roles'][role]['permissions'])

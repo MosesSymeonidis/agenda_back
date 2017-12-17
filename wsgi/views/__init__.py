@@ -1,4 +1,4 @@
-from Utils.utils import json_response
+from utils.base import json_response
 from flask.views import MethodView
 from flask import request
 

@@ -1,7 +1,7 @@
 from mongoengine.errors import *
-from Utils.utils import json_response
+from utils.base import json_response
 from flask import current_app as app
-from Utils.Exceptions import Mongo, Business
+from utils.exceptions import mongo, business
 import inspect
 
 
@@ -39,5 +39,5 @@ def getErrorDict(selected_class):
             res[obj] = ''
     return res
 
-error_dict.update(Mongo.errors)
-error_dict.update(getErrorDict(Business))
+error_dict.update(mongo.errors)
+error_dict.update(getErrorDict(business))
