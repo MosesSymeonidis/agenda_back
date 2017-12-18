@@ -7,10 +7,9 @@ from bson import ObjectId
 
 auth = models.User.auth
 
+
 class Business(BaseView):
-
-
-    @RequestValidation.parameters_assertion(parameters=['data'],args_or_form='json')
+    @RequestValidation.parameters_assertion(parameters=['data'], args_or_form='json')
     @auth.login_required
     def post(self):
         user = global_storage.user
@@ -20,9 +19,9 @@ class Business(BaseView):
         user.assertion_of_businesses_num()
 
         data = self.request.get_json()['data']
-        RequestValidation.parameter_assertion(data,['name','settings','plan','address'])
+        RequestValidation.parameter_assertion(data, ['name', 'settings', 'plan', 'address'])
         address = data['address']
-        RequestValidation.parameter_assertion(address,['country','area','city','street','geolocation'])
+        RequestValidation.parameter_assertion(address, ['country', 'area', 'city', 'street', 'geolocation'])
         address_object = models.Address(
             country=address['country'],
             area=address['area'],
@@ -30,7 +29,7 @@ class Business(BaseView):
             street=address['street'],
             number=int(address['number'])
             # geolocation=address['geolocation']
-                          )
+        )
         print(address_object.to_json())
         business = models.Business(
             name=data['name'],
@@ -51,16 +50,14 @@ class Business(BaseView):
         return all_business
 
 
-
 class BusinessPeaple(BaseView):
-
-    def post(self, business_id, type, user_id=None,**kwargs):
+    def post(self, business_id, type, user_id=None, **kwargs):
 
         business = models.Business.objects.get(id=ObjectId(business_id))
         user = models.User.objects.get(id=ObjectId(user_id))
 
         data = self.request.get_json()
-        #TODO if data for any keyword is empty we should check if user has register and find info from user
+        # TODO if data for any keyword is empty we should check if user has register and find info from user
         info = {'business': business}
         for key in ['alias', 'email', 'phone', 'description']:
             if key in data:
@@ -85,41 +82,39 @@ class BusinessPeaple(BaseView):
 
         return {'success': True}
 
-    def get(self,**kwargs):
+    def get(self, **kwargs):
         return {}
 
     def put(self, **kwargs):
         return {}
 
-    def delete(self,**kwargs):
+    def delete(self, **kwargs):
         return {}
 
 
 class Settings(BaseView):
-
-    def post(self,**kwargs):
+    def post(self, **kwargs):
         return {}
 
-    def get(self,**kwargs):
+    def get(self, **kwargs):
         return {}
 
     def put(self, **kwargs):
         return {}
 
-    def delete(self,**kwargs):
+    def delete(self, **kwargs):
         return {}
 
 
 class Service(BaseView):
-
-    def post(self,**kwargs):
+    def post(self, **kwargs):
         return {}
 
-    def get(self,**kwargs):
+    def get(self, **kwargs):
         return {}
 
     def put(self, **kwargs):
         return {}
 
-    def delete(self,**kwargs):
+    def delete(self, **kwargs):
         return {}

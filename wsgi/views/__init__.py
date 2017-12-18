@@ -4,12 +4,11 @@ from flask import request
 
 
 class GeneralView(MethodView):
-
     def __init__(self):
 
         self.request = request
 
-    def dispatcher(self,**kwargs):
+    def dispatcher(self, **kwargs):
         if self.request.method == 'GET':
             return self.get(**kwargs)
 
@@ -25,28 +24,23 @@ class GeneralView(MethodView):
         elif self.request.method == 'DELETE':
             return self.delete(**kwargs)
 
-    def get(self,**kwargs):
+    def get(self, **kwargs):
         return "ECHO: GET\n"
 
-    def post(self,**kwargs):
+    def post(self, **kwargs):
         return "ECHO: POST\n"
 
-    def patch(self,**kwargs):
+    def patch(self, **kwargs):
         return "ECHO: PACTH\n"
 
     def put(self, **kwargs):
         return "ECHO: PUT\n"
 
-    def delete(self,**kwargs):
+    def delete(self, **kwargs):
         return "ECHO: DELETE"
 
 
 class BaseView(GeneralView):
-
     @json_response
-    def dispatcher(self,**kwargs):
+    def dispatcher(self, **kwargs):
         return super(BaseView, self).dispatcher(**kwargs)
-
-
-
-

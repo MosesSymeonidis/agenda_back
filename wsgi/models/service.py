@@ -2,6 +2,7 @@ from mongoengine import *
 from flask import current_app as app
 import models
 
+
 class Service(Document):
     schema = models.Config.objects.get(config_id='schema')
     # from Models import User as model_user_at_service
@@ -17,11 +18,10 @@ class Service(Document):
     #
     bussiness = ReferenceField(models.Business)
 
-    #TODO check again this
+    # TODO check again this
     def save(self, force_insert=False, validate=True, clean=True,
              write_concern=None, cascade=None, cascade_kwargs=None,
              _refs=None, save_condition=None, signal_kwargs=None, **kwargs):
-
 
         official_name = self.official_name
         services = schema['categories'][self.type]['services']
@@ -32,8 +32,5 @@ class Service(Document):
                         raise InvalidDocumentError()
 
         return super(Document, self).save(force_insert=False, validate=True, clean=True,
-             write_concern=None, cascade=None, cascade_kwargs=None,
-             _refs=None, save_condition=None, signal_kwargs=None, **kwargs)
-
-
-
+                                          write_concern=None, cascade=None, cascade_kwargs=None,
+                                          _refs=None, save_condition=None, signal_kwargs=None, **kwargs)

@@ -1,3 +1,2 @@
 class BasicException(Exception):
-    parameters={}
-
+    parameters = {}

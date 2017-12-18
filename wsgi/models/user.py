@@ -1,4 +1,7 @@
 import datetime
+import random
+import string
+
 from flask import current_app as app
 from flask import g as global_storage
 from flask_httpauth import HTTPBasicAuth
@@ -10,8 +13,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from utils.exceptions.user import *
 import models
 
-class User(Document):
 
+class User(Document):
     class PersonalInfo(EmbeddedDocument):
         name = StringField(required=True)
         surname = StringField(required=True)
@@ -24,14 +27,14 @@ class User(Document):
 
     class Client(EmbeddedDocument):
         business = ReferenceField(models.Business)
-        alias = StringField()#TODO required=True)
+        alias = StringField()  # TODO required=True)
         email = EmailField()
         phone = StringField()
         description = StringField()
 
     class Employee(EmbeddedDocument):
         business = ReferenceField(models.Business)
-        alias = StringField()#TODO required=True)
+        alias = StringField()  # TODO required=True)
         email = EmailField()
         phone = StringField()
 
@@ -40,7 +43,6 @@ class User(Document):
     TYPE_ADMIN = 'admin'
     TYPE_CLIENT = 'client'
     TYPE_EMPLOYEE = 'employee'
-
 
     GUEST_ROLE = 'guest'
 
@@ -58,7 +60,7 @@ class User(Document):
     deleted = BooleanField(required=True, default=False)
 
     roles = ListField(
-        StringField(max_length=20, choices=(PROFESSIONAL_ROLE, OWNER_ROLE, GUEST_ROLE)),default=[GUEST_ROLE])
+        StringField(max_length=20, choices=(PROFESSIONAL_ROLE, OWNER_ROLE, GUEST_ROLE)), default=[GUEST_ROLE])
 
     client = ListField(EmbeddedDocumentField(Client))
 
@@ -73,6 +75,9 @@ class User(Document):
     address = models.Address
 
     owned_businesses = ListField(ReferenceField(models.Business))
+
+    random_secret = StringField()
+    token = StringField()
 
     @property
     def is_business_owner(self):
@@ -113,8 +118,11 @@ class User(Document):
         return check_password_hash(self.password, password)
 
     def generate_auth_token(self, expiration=600):
-        s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'id': str(self.id)})
+        self.random_secret = ''.join(random.choice(string.ascii_uppercase + string.digits) for i in range(15))
+        s = Serializer(self.random_secret, expires_in=expiration)
+        self.token = s.dumps({'id': str(self.id)})
+        self.save()
+        return self.token
 
     def generate_activation_code(self, expiration=6000):
         s = Serializer(app.config['ACTIVATION_SECRET_KEY'], expires_in=expiration)
@@ -205,7 +213,8 @@ class User(Document):
 
     @staticmethod
     def verify_auth_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
+        user = User.objects.get(token=token)
+        s = Serializer(user.random_secret)
         try:
             data = s.loads(token)
         except SignatureExpired:
@@ -229,4 +238,3 @@ class User(Document):
                 return False
         global_storage.user = user
         return True
-

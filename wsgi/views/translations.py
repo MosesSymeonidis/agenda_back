@@ -2,9 +2,8 @@ from views import BaseView
 import models
 from utils.admin_management import admin_authorization
 
+
 class Translations(BaseView):
-
-
     def get(self, lang=models.Translation.get_default_lang()):
 
         lang = lang.lower()
@@ -31,4 +30,4 @@ class Translations(BaseView):
             csv = models.Translation.downloadCSV()
             models.Translation.importFromCSVFile(csv)
 
-        return {'success':True}
+        return {'success': True}

@@ -2,6 +2,7 @@ from mongoengine import *
 import datetime
 import models
 
+
 class TimeSlot(Document):
     meta = {'allow_inheritance': True}
     start = DateTimeField(required=True)
@@ -14,11 +15,12 @@ class TimeSlot(Document):
     modified_from = ReferenceField(models.User, required=True)
     history = ListField(DictField())
 
+
 class Break(TimeSlot):
     pass
 
-class Appointment(TimeSlot):
 
+class Appointment(TimeSlot):
     DELETED_REASON_NO_SHOW = 'no_show'
     DELETED_REASON_BY_ADMIN = 'by_admin'
 
@@ -30,14 +32,12 @@ class Appointment(TimeSlot):
     clients = ListField(ReferenceField(models.User), required=True)
 
     delete_reason = StringField(choices=(DELETED_REASON_BY_ADMIN, DELETED_REASON_NO_SHOW))
-    device = StringField(required=True, default=DEVICE_DESKTOP,choices=(DEVICE_MOBILE, DEVICE_DESKTOP))
+    device = StringField(required=True, default=DEVICE_DESKTOP, choices=(DEVICE_MOBILE, DEVICE_DESKTOP))
 
     @property
     def client(self):
         return self.clients[0]
 
-
     @property
     def num_of_clients(self):
         return len(self.clients)
-

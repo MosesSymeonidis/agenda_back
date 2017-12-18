@@ -13,6 +13,7 @@ def check_admin_auth(username, password):
     except Exception:
         raise Exception
 
+
 def admin_authorization(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -20,4 +21,5 @@ def admin_authorization(f):
         if not auth or not check_admin_auth(auth.username, auth.password):
             raise Exception
         return f(*args, **kwargs)
+
     return decorated

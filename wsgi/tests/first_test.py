@@ -4,8 +4,8 @@ from mongoengine import connect
 import mongomock
 from Models.Utils import Config
 
-class FlaskBookshelfTests(unittest.TestCase):
 
+class FlaskBookshelfTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         pass
@@ -17,7 +17,11 @@ class FlaskBookshelfTests(unittest.TestCase):
     def setUp(self):
         # creates a test client
         # connect(host='mongomock://localhost')
-        id = mongomock.MongoClient().db.Config.insert({ "config_id" : "initials", "SECRET_KEY" : "yolo leme trele mou", "ACTIVATION_SECRET_KEY" : "oti na nai dn tn palevoume", "DEBUG" : True, "MAIL_SERVER" : "smtp.zoho.eu", "MAIL_PORT" : 465, "MAIL_USE_SSL" : True, "MAIL_USE_TLS" : False, "MAIL_USERNAME" : "info@taxicab.me", "MAIL_PASSWORD" : "21132113" })
+        id = mongomock.MongoClient().db.Config.insert({"config_id": "initials", "SECRET_KEY": "yolo leme trele mou",
+                                                       "ACTIVATION_SECRET_KEY": "oti na nai dn tn palevoume",
+                                                       "DEBUG": True, "MAIL_SERVER": "smtp.zoho.eu", "MAIL_PORT": 465,
+                                                       "MAIL_USE_SSL": True, "MAIL_USE_TLS": False,
+                                                       "MAIL_USERNAME": "info@taxicab.me", "MAIL_PASSWORD": "21132113"})
 
         # print(Config.objects.get(config_id='initials'))
         print(id)
@@ -53,6 +57,7 @@ class FlaskBookshelfTests(unittest.TestCase):
 
         # assert the response data
         self.assertEqual(result.data, "Hello World!!!")
+
 
 if __name__ == '__main__':
     unittest.main()

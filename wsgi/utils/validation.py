@@ -3,14 +3,15 @@ from utils.exceptions.general_exceptions import ParameterDoesNotExists, MethodEr
 
 class RequestValidation():
     @staticmethod
-    def parameters_assertion(parameters,args_or_form='args'):
+    def parameters_assertion(parameters, args_or_form='args'):
         """
         Decorator for assertion parameters
         :param parameters:
         :return:
         """
+
         def assertions(func):
-            def func_wrapper(self,*args,**kwargs):
+            def func_wrapper(self, *args, **kwargs):
                 try:
                     if args_or_form == 'args':
                         for parameter in parameters:
@@ -26,9 +27,10 @@ class RequestValidation():
                                 raise ParameterDoesNotExists(parameter)
                 except TypeError:
                     raise MethodError(type=args_or_form)
-                return func(self,*args,**kwargs)
+                return func(self, *args, **kwargs)
 
             return func_wrapper
+
         return assertions
 
     @staticmethod

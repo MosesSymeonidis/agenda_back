@@ -12,6 +12,7 @@ from threading import Thread
 
 import inspect
 
+
 def bson_handler(x):
     """
     Handles bson types for json dumps for the framework
@@ -133,30 +134,35 @@ def save_response(resp):
     return json.loads(json.dumps(obj=resp_data, default=bson_handler))
 
 
+def model_converter(model):
+    class ModelConverter(BaseConverter):
 
-class ModelConverter(BaseConverter):
-    def __init__(self,map, model=None):
-        import models
-        BaseConverter.__init__(self, map)
-        self.model = None
-        if model in dir(models):
+        def __init__(self, map):
+            BaseConverter.__init__(self, map)
+            self.model = model
 
-            temp_class = getattr(models, model)
-
-            if inspect.isclass(temp_class) and issubclass(temp_class, Document):
-                self.model = temp_class
-
-    def to_python(self, value):
-
-        if self.model:
+        def to_python(self, value):
             try:
-                return self.model.objects.get(id=value)
+                return self.model.url_converter_to_python(value=value)
+            except AttributeError:
+                try:
+                    return self.model.objects.get(id=value)
+                except:
+                    raise ValidationError()
             except:
                 raise ValidationError()
-        raise ValidationError()
 
-    def to_url(self, value):
-        if isinstance(value, self.model):
-            value = value.id
-        return super(ModelConverter, self).to_url(value)
+        def to_url(self, value):
+            try:
+                value = self.model.url_converter_to_url(value)
+            except AttributeError:
+                try:
+                    if isinstance(value, self.model):
+                        value = value.id
+                except:
+                    raise ValidationError()
+            except:
+                raise ValidationError()
+            return super(ModelConverter, self).to_url(value)
 
+    return ModelConverter

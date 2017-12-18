@@ -6,7 +6,7 @@ from flask import render_template
 
 class Template(DynamicDocument):
     template_id = StringField(required=True)
-    language = StringField(required=True,choices=('EN','GR'))
+    language = StringField(required=True, choices=('EN', 'GR'))
     meta = {'allow_inheritance': True}
 
 
@@ -29,12 +29,12 @@ class Mail(Notification):
     from_template = ReferenceField(MailTemplate)
     body_params = DictField()
 
-    def __init__(self, template_id, send_to, send_from='', language = 'EN', vars = {}):
+    def __init__(self, template_id, send_to, send_from='', language='EN', vars={}):
         super(Mail, self).__init__()
-        self.prepare(template_id, send_to, send_from, language , vars)
+        self.prepare(template_id, send_to, send_from, language, vars)
 
-    def prepare(self, template_id, send_to, send_from='', language = 'EN', vars = {}):
-        mail_template = MailTemplate.objects.get(template_id=template_id,language=language)
+    def prepare(self, template_id, send_to, send_from='', language='EN', vars={}):
+        mail_template = MailTemplate.objects.get(template_id=template_id, language=language)
         print(mail_template.id)
         self.from_template = mail_template
         self.compiled_body = render_template(self.from_template.template_path, **vars)
@@ -56,6 +56,3 @@ class Mail(Notification):
         mail.send(message=msg)
 
         self.save()
-
-
-

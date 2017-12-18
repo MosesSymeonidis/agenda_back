@@ -1,6 +1,8 @@
 """
 https://stackoverflow.com/questions/5189699/how-to-make-a-class-property
 """
+
+
 class ClassPropertyDescriptor(object):
     def __init__(self, fget, fset=None):
         self.fget = fget
