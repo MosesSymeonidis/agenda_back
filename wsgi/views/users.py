@@ -67,7 +67,7 @@ class token(BaseView):
         user.assertion_is_activated()
 
         token = user.generate_auth_token(600)
-        return {'token': token.decode('ascii'), 'duration': 600}
+        return {'token': token, 'duration': 600}
 
 
 class Activation(BaseView):

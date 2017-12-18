@@ -120,7 +120,7 @@ class User(Document):
     def generate_auth_token(self, expiration=600):
         self.random_secret = ''.join(random.choice(string.ascii_uppercase + string.digits) for i in range(15))
         s = Serializer(self.random_secret, expires_in=expiration)
-        self.token = s.dumps({'id': str(self.id)})
+        self.token = s.dumps({'id': str(self.id)}).decode('ascii')
         self.save()
         return self.token
 
@@ -213,9 +213,12 @@ class User(Document):
 
     @staticmethod
     def verify_auth_token(token):
-        user = User.objects.get(token=token)
-        s = Serializer(user.random_secret)
         try:
+            user = User.objects.get(token=token)
+        except:
+            return None
+        try:
+            s = Serializer(user.random_secret)
             data = s.loads(token)
         except SignatureExpired:
             return None  # valid token, but expired
