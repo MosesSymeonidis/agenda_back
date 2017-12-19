@@ -1,57 +1,58 @@
-main_urls = {
-    '/auth': {
-        'class': 'views.users.token',
-        'endpoint': 'auth'},
-    '/user/<string:role>': {
-        'class': 'views.users.UserView',
-        'endpoint': 'user_role'},
-    '/user': {
-        'class': 'views.users.UserView',
-        'endpoint': 'user_guest'},
-    '/activation/<string:user_id>': {
-        'class': 'views.users.Activation',
-        'endpoint': 'activation'},
-    '/business': {
-        'class': 'views.business.Business',
-        'endpoint': 'business'},
-    #    '/service/<string:type':'',
-    '/service': {
-        'class': 'views.business.Service',
-        'endpoint': 'service'},
-    '/business/<string:business_id>/<string:type>/<string:user_id>': {
-        'class': 'views.business.BusinessPeaple',
-        'endpoint': 'business_peaple'},
-    '/business/<string:business_id>/settings': {
-        'class': 'views.business.Settings',
-        'endpoint': 'business_settings'},
-    '/appointment': {
-        'class': 'views.appointment.Appointment',
-        'endpoint': 'new_appointment'},
-    '/appointment/<string:id>': {
-        'class': 'views.appointment.Appointment',
-        'endpoint': 'created_appointment'},
-    '/schema': {
-        'class': 'views.config.Config',
-        'endpoint': 'configs'},
-    '/translations/<string:lang>/': {
-        'class': 'views.translations.Translations',
-        'endpoint': 'translations'},
-    '/<string:business_id>/<string:type>/CSV': {
-        'class': 'views.exportImport.CSV',
-        'endpoint': 'export_import_csv'},
+import views
 
-}
+__main_urls__ = [
+    dict(route='/auth',
+         cls=views.users.token,
+         endpoint='auth'),
+    dict(route='/user/<string:role>',
+         cls=views.users.UserView,
+         endpoint='user_role'),
+    dict(route='/user',
+         cls=views.users.UserView,
+         endpoint='user_guest'),
+    dict(route='/activation/<string:user_id>',
+         cls=views.users.Activation,
+         endpoint='activation'),
+    dict(route='/business',
+         cls=views.business.Business,
+         endpoint='business'),
+    dict(route='/service',
+         cls=views.business.Service,
+         endpoint='service'),
+    dict(route='/business/<string:business_id>/<string:type>/<string:user_id>',
+         cls=views.business.BusinessPeaple,
+         endpoint='business_peaple'),
+    dict(route='/business/<string:business_id>/settings',
+         cls=views.business.Settings,
+         endpoint='business_settings'),
+    dict(route='/appointment',
+         cls=views.appointment.Appointment,
+         endpoint='new_appointment'),
+    dict(route='/appointment/<string:id>',
+         cls=views.appointment.Appointment,
+         endpoint='created_appointment'),
+    dict(route='/schema',
+         cls=views.config.Config,
+         endpoint='configs'),
+    dict(route='/translations/<string:lang>/',
+         cls=views.translations.Translations,
+         endpoint='translations'),
+    dict(route='/<string:business_id>/<string:type>/CSV',
+         cls=views.exportImport.CSV,
+         endpoint='export_import_csv')
+]
 
-debug_urls = {
-    '/test/<Business:business>': {
-        'class': 'views.test.test',
-        'endpoint': 'test'},
-    '/test/': {
-        'class': 'views.test.test',
-        'endpoint': 'test2'},
-}
+__debug_urls__ = [
+    dict(route='/test/<Business:business>',
+         cls=views.test,
+         endpoint='test234'),
+    dict(route='/test/',
+         cls=views.test,
+         endpoint='test2')
+]
 
 
 def get_urls():
-    main_urls.update(debug_urls)
+    main_urls = __main_urls__
+    main_urls += __debug_urls__
     return main_urls

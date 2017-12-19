@@ -6,7 +6,6 @@ from flask import Flask
 from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 from raven.contrib.flask import Sentry
-import URLs
 from utils.base import json_response, str_import, save_request, save_response
 from flask import request
 from flask import g as global_storage
@@ -86,6 +85,7 @@ def create_app(is_sentry_on=False, **kwargs):
         traffic.save()
         return resp
 
+    import URLs
     routes = URLs.get_urls()
     for model in dir(models):
         temp_class = getattr(models, model)
@@ -94,10 +94,10 @@ def create_app(is_sentry_on=False, **kwargs):
             app.url_map.converters[temp_class.__name__] = temp_class.get_converter()
 
     for route in routes:
-        imported_class = str_import(routes[route]['class'])
+        imported_class = route['cls']
 
         route_object = imported_class()
-        app.add_url_rule(route, view_func=route_object.dispatcher, endpoint=routes[route]['endpoint'],
+        app.add_url_rule(route['route'], view_func=route_object.dispatcher, endpoint=route['endpoint'],
                          methods=['GET', 'POST', 'PUT', 'DELETE'])
 
     return app

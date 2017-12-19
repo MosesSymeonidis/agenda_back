@@ -1,4 +1,4 @@
-from views import BaseView
+from views.base import BaseView
 
 
 class Appointment(BaseView):

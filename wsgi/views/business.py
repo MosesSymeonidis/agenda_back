@@ -1,4 +1,4 @@
-from views import BaseView
+from views.base import BaseView
 import models
 
 from flask import g as global_storage

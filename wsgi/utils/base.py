@@ -142,7 +142,6 @@ class ModelConverter(BaseConverter):
     to get a proper document from specific model
     """
     def to_python(self, value):
-        self.model.objects.get(id=value)
         try:
             return self.model.objects.get(id=value)
         except:

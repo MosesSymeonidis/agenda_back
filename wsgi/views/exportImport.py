@@ -1,4 +1,4 @@
-from views import GeneralView
+from views.base import GeneralView
 from flask import Response
 from models.business import Business
 from bson import ObjectId
