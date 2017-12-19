@@ -4,6 +4,7 @@ from flask_mail import Message as FlaskMessage
 from flask import render_template
 import models
 
+
 class Template(models.base.BaseDynamicDocument):
     template_id = StringField(required=True)
     language = StringField(required=True, choices=('EN', 'GR'))

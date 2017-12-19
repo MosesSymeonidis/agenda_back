@@ -4,7 +4,6 @@ from mongoengine import Document, DynamicDocument, queryset_manager
 from utils.base import ModelConverter
 
 
-
 class BaseDocument(Document):
     meta = {'abstract': True}
 
@@ -26,6 +25,7 @@ class BaseDocument(Document):
         Util method for creating the class model converter
         :return: A model converter class
         """
+
         class Temp(cls.__converter__):
             model = cls
 
@@ -34,4 +34,3 @@ class BaseDocument(Document):
 
 class BaseDynamicDocument(DynamicDocument, BaseDocument):
     meta = {'abstract': True}
-

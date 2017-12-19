@@ -134,13 +134,13 @@ def save_response(resp):
     return json.loads(json.dumps(obj=resp_data, default=bson_handler))
 
 
-
 class ModelConverter(BaseConverter):
     """
     This class creates a general url converter for BaseDocument.
     It has as attribute the model (self.model) so anyone can override the to_python and to_url methods
     to get a proper document from specific model
     """
+
     def to_python(self, value):
         try:
             return self.model.objects.get(id=value)

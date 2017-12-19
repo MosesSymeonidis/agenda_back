@@ -1,8 +1,8 @@
 from mongoengine import *
 import models
 
-class Business(models.base.BaseDocument):
 
+class Business(models.base.BaseDocument):
     name = StringField(required=True, max_length=200)
     settings = DictField()
 
