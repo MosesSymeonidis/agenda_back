@@ -1,9 +1,8 @@
 from mongoengine import *
-from flask import current_app as app
 import models
 
+class Business(models.base.BaseDocument):
 
-class Business(Document):
     name = StringField(required=True, max_length=200)
     settings = DictField()
 

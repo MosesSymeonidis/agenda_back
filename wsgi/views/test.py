@@ -25,5 +25,9 @@ class test(BaseView):
         # mail = Mail(language='EN',template_id='test',send_to='msymewnidhs2113@yahoo.gr', send_from='info@taxicab.me',vars={'yolo':'asdfasd'})
         # mail.send()
         # models.Business.objects.get(id='5916c4a6982bce88511cec8c')
+
+        # print(models.Business.objects)
+        print(models.Business.objects.filter(name='asfdfasdfa').aggregation_builder.execute())
+        # business.objects.aggregation_builder.limit(1).execute()
         print(business)
         return {'yolo': True}

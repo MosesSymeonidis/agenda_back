@@ -2,9 +2,9 @@ from mongoengine import *
 from flask_mail import Mail as FlaskMail
 from flask_mail import Message as FlaskMessage
 from flask import render_template
+import models
 
-
-class Template(DynamicDocument):
+class Template(models.base.BaseDynamicDocument):
     template_id = StringField(required=True)
     language = StringField(required=True, choices=('EN', 'GR'))
     meta = {'allow_inheritance': True}
@@ -16,7 +16,7 @@ class MailTemplate(Template):
     template_path = StringField(required=True)
 
 
-class Notification(DynamicDocument):
+class Notification(models.base.BaseDynamicDocument):
     meta = {'allow_inheritance': True}
     pass
 

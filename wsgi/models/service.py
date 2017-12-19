@@ -3,7 +3,7 @@ from flask import current_app as app
 import models
 
 
-class Service(Document):
+class Service(models.base.BaseDocument):
     schema = models.Config.objects.get(config_id='schema')
     # from Models import User as model_user_at_service
     name = StringField(required=True, max_length=200)

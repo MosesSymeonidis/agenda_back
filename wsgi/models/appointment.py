@@ -1,9 +1,10 @@
 from mongoengine import *
 import datetime
 import models
+from models.base import BaseDocument
 
 
-class TimeSlot(Document):
+class TimeSlot(BaseDocument):
     meta = {'allow_inheritance': True}
     start = DateTimeField(required=True)
     end = DateTimeField(required=True)

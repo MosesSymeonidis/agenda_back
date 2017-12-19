@@ -134,35 +134,24 @@ def save_response(resp):
     return json.loads(json.dumps(obj=resp_data, default=bson_handler))
 
 
-def model_converter(model):
-    class ModelConverter(BaseConverter):
 
-        def __init__(self, map):
-            BaseConverter.__init__(self, map)
-            self.model = model
+class ModelConverter(BaseConverter):
+    """
+    This class creates a general url converter for BaseDocument.
+    It has as attribute the model (self.model) so anyone can override the to_python and to_url methods
+    to get a proper document from specific model
+    """
+    def to_python(self, value):
+        self.model.objects.get(id=value)
+        try:
+            return self.model.objects.get(id=value)
+        except:
+            raise ValidationError()
 
-        def to_python(self, value):
-            try:
-                return self.model.url_converter_to_python(value=value)
-            except AttributeError:
-                try:
-                    return self.model.objects.get(id=value)
-                except:
-                    raise ValidationError()
-            except:
-                raise ValidationError()
-
-        def to_url(self, value):
-            try:
-                value = self.model.url_converter_to_url(value)
-            except AttributeError:
-                try:
-                    if isinstance(value, self.model):
-                        value = value.id
-                except:
-                    raise ValidationError()
-            except:
-                raise ValidationError()
-            return super(ModelConverter, self).to_url(value)
-
-    return ModelConverter
+    def to_url(self, value):
+        try:
+            if isinstance(value, self.model):
+                value = value.id
+        except:
+            raise ValidationError()
+        return super(BaseConverter, self).to_url(value)

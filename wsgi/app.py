@@ -7,11 +7,10 @@ from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 from raven.contrib.flask import Sentry
 import URLs
-from utils.base import json_response, str_import, save_request, save_response, model_converter
+from utils.base import json_response, str_import, save_request, save_response
 from flask import request
 from flask import g as global_storage
 import flask_mobility
-from mongoengine import Document
 
 
 def create_app(is_sentry_on=False, **kwargs):
@@ -90,8 +89,9 @@ def create_app(is_sentry_on=False, **kwargs):
     routes = URLs.get_urls()
     for model in dir(models):
         temp_class = getattr(models, model)
-        if inspect.isclass(temp_class) and issubclass(temp_class, Document):
-            app.url_map.converters[temp_class.__name__] = model_converter(temp_class)
+        if inspect.isclass(temp_class) and issubclass(temp_class, models.base.BaseDocument):
+            print(temp_class.__name__)
+            app.url_map.converters[temp_class.__name__] = temp_class.get_converter()
 
     for route in routes:
         imported_class = str_import(routes[route]['class'])

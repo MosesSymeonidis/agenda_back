@@ -14,7 +14,7 @@ from utils.exceptions.user import *
 import models
 
 
-class User(Document):
+class User(models.base.BaseDocument):
     class PersonalInfo(EmbeddedDocument):
         name = StringField(required=True)
         surname = StringField(required=True)
