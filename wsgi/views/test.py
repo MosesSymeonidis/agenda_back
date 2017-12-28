@@ -1,5 +1,6 @@
 from views.base import BaseView
 import models
+import random
 
 
 class test(BaseView):
@@ -26,8 +27,15 @@ class test(BaseView):
         # mail.send()
         # models.Business.objects.get(id='5916c4a6982bce88511cec8c')
 
-        # print(models.Business.objects)
-        print(models.Business.objects.filter(name='asfdfasdfa').aggregation_builder.execute())
+        # for i in range(0,10):
+        #     models.Cache.set(str(random.randint(0, 100000000)), 'test')
+        b = models.Business.objects.get(id='5946509744a72127222ac7c1')
+        b.test()
+        # models.Cache.set('test', b,type='pickle')
+        # models.Cache.get('test')
+
+        # # print(models.Business.objects)
+        # print(models.Business.objects.filter(name='asfdfasdfa').aggregation_builder.execute())
         # business.objects.aggregation_builder.limit(1).execute()
-        print(business)
-        return {'yolo': True}
+        # print(business)
+        return b.test()

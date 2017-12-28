@@ -154,3 +154,26 @@ class ModelConverter(BaseConverter):
         except:
             raise ValidationError()
         return super(BaseConverter, self).to_url(value)
+
+
+def cache_decorator(cache_system, key=None, duration=3600, type='string'):
+
+    def first_wrapper(func):
+        def func_wrapper(*args, **kwargs):
+            if key is None:
+                real_key = 'function:'+func.__name__
+            elif callable(key):
+                real_key = key(*args, **kwargs)
+            else:
+                real_key = key
+            try:
+                res = cache_system.get(real_key)
+            except Exception:
+                res = None
+            if res is None:
+                res = func(*args, **kwargs)
+                cache_system.set(real_key, res, duration=duration, type=type)
+            return res
+        return func_wrapper
+
+    return first_wrapper

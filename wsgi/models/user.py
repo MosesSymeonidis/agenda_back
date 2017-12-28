@@ -43,7 +43,6 @@ class User(models.base.BaseDocument):
     TYPE_ADMIN = 'admin'
     TYPE_CLIENT = 'client'
     TYPE_EMPLOYEE = 'employee'
-
     GUEST_ROLE = 'guest'
 
     PROFESSIONAL_ROLE = 'professional'
@@ -107,9 +106,6 @@ class User(models.base.BaseDocument):
         self.username = username
         self.email = email
         self.set_password(password)
-
-    def set_email(self, email):
-        self.email = email
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -208,7 +204,6 @@ class User(models.base.BaseDocument):
         self.personal_info = self.PersonalInfo(name=name, surname=surname, birthday=birthday, gender=gender)
 
     def check_role(self, role):
-        print(self.roles)
         return role in self.roles
 
     @staticmethod

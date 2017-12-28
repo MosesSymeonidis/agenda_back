@@ -1,3 +1,6 @@
+import json
+import pickle
+import codecs
 from mongoengine import *
 import datetime
 from aggregation_builder import AggregateQuerySet
@@ -67,3 +70,41 @@ class Translation(DynamicDocument):
             res.update({translation['_id']: translation[lang]})
 
         return res
+
+
+class Cache(DynamicDocument):
+    key = StringField(primary_key=True)
+    remove_at = DateTimeField(required=True)
+    value = StringField()
+    type = StringField()
+
+    @classmethod
+    def get(cls, key):
+        obj = cls.objects(key=key).only('value', 'type').hint('_id_1_type_1_value_1').first()
+        print('aaaaa', obj.value)
+        if obj.type == 'string':
+            return obj.value
+        elif obj.type == 'json':
+            try:
+                return json.loads(obj.value)
+            except Exception:
+                return None
+        elif obj.type == 'pickle':
+            try:
+                return pickle.loads(codecs.decode(obj.value.encode(), "base64"))
+            except Exception:
+                return None
+
+    @classmethod
+    def set(cls, key, value, duration=60000, type='string'):
+        if type == 'string':
+            new_value = str(value)
+        elif type == 'json':
+            new_value = json.dumps(value)
+        elif type == 'pickle':
+            new_value = codecs.encode(pickle.dumps(value), "base64").decode()
+        else:
+            raise Exception
+        remove_at = datetime.datetime.now() + datetime.timedelta(milliseconds=duration)
+        obj = Cache(key=key, type=type, value=new_value, remove_at=remove_at)
+        obj.save()
