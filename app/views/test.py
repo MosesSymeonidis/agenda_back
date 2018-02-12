@@ -29,8 +29,8 @@ class test(BaseView):
 
         # for i in range(0,10):
         #     models.Cache.set(str(random.randint(0, 100000000)), 'test')
-        b = models.Business.objects.get(id='5946509744a72127222ac7c1')
-        b.test()
+        # b = models.Business.objects.get(id='5946509744a72127222ac7c1')
+        # b.test()
         # models.Cache.set('test', b,type='pickle')
         # models.Cache.get('test')
 
@@ -38,4 +38,4 @@ class test(BaseView):
         # print(models.Business.objects.filter(name='asfdfasdfa').aggregation_builder.execute())
         # business.objects.aggregation_builder.limit(1).execute()
         # print(business)
-        return b.test()
+        return 'jhjhgjhgjhg'

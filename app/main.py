@@ -102,9 +102,9 @@ def create_app(is_sentry_on=False, **kwargs):
 
     return app
 
-
-if __name__ == "__main__":
-    create_app(MONGODB_SETTINGS={
+app = create_app(MONGODB_SETTINGS={
         'db': 'cheapbookdev',
         'host': 'mongodb://cbuser:092hdfkv245@ds053305.mlab.com:53305/cheapbookdev'
-    }).run('0.0.0.0')
+    })
+if __name__ == "__main__":
+    app.run('0.0.0.0')
